@@ -31853,7 +31853,6 @@ uint32_t flecs_switch_first(
     return (uint32_t)hdr[0];
 }
 
-FLECS_DBG_API
 uint32_t flecs_switch_next(
     const ecs_switch_t *sw,
     uint32_t previous)
