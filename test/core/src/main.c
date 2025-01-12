@@ -59,6 +59,7 @@ void Id_invalid_pair(void);
 
 // Testsuite 'Entity'
 void Entity_init_id(void);
+void Entity_init_id_exceed_32_bits(void);
 void Entity_init_id_name(void);
 void Entity_init_id_path(void);
 void Entity_init_id_add_1_comp(void);
@@ -165,6 +166,7 @@ void Entity_entity_from_digit_0_path(void);
 void Entity_entity_from_conflicting_digit(void);
 void Entity_set_version_on_nonempty_entity(void);
 void Entity_set_version_while_deferred(void);
+void Entity_set_version_on_not_alive(void);
 void Entity_commit_w_on_add(void);
 void Entity_commit_w_on_remove(void);
 void Entity_commit_w_cmd_in_observer(void);
@@ -187,6 +189,7 @@ void Entity_entity_init_w_set_1_comp_w_name_defer(void);
 void Entity_entity_init_w_set_1_comp_existing_defer(void);
 void Entity_entity_init_w_set_1_comp_existing_empty_defer(void);
 void Entity_entity_init_w_set_1_comp_1_tag_w_set_defer(void);
+void Entity_entity_init_w_set_1_comp_suspend_defer(void);
 void Entity_insert_1_comp(void);
 void Entity_insert_2_comp(void);
 void Entity_insert_1_comp_1_tag(void);
@@ -196,6 +199,9 @@ void Entity_entity_w_parent_w_add(void);
 void Entity_entity_w_parent_w_add_w_parent(void);
 void Entity_entity_w_parent_w_set(void);
 void Entity_entity_w_parent_w_set_w_parent(void);
+void Entity_entity_w_new_id_and_double_dot(void);
+void Entity_entity_w_existing_id_and_double_dot(void);
+void Entity_entity_w_large_id_name(void);
 
 // Testsuite 'Each'
 void Each_each_tag(void);
@@ -359,6 +365,8 @@ void New_new_w_table_override(void);
 void New_w_Count_empty(void);
 void New_w_Count_component(void);
 void New_w_Count_tag(void);
+void New_w_Count_bulk_ids_w_1_exceed_32_bits(void);
+void New_w_Count_bulk_ids_w_2_exceed_32_bits(void);
 void New_w_Count_bulk_init_empty(void);
 void New_w_Count_bulk_init_empty_w_entities(void);
 void New_w_Count_bulk_init_1_tag(void);
@@ -486,6 +494,7 @@ void Sparse_on_add_observer_2_terms(void);
 void Sparse_on_set_observer_2_terms(void);
 void Sparse_on_remove_observer_2_terms(void);
 void Sparse_sparse_relationship(void);
+void Sparse_sparse_relationship_second(void);
 void Sparse_defer_ensure(void);
 void Sparse_defer_ensure_w_modified(void);
 void Sparse_defer_ensure_modified(void);
@@ -610,6 +619,7 @@ void Hierarchies_path_only_escaped_two_sep_w_parent(void);
 void Hierarchies_fullpath_for_core(void);
 void Hierarchies_path_w_number(void);
 void Hierarchies_path_w_entity_id(void);
+void Hierarchies_recreated_parent_w_named_children(void);
 void Hierarchies_lookup_depth_0(void);
 void Hierarchies_lookup_depth_1(void);
 void Hierarchies_lookup_depth_2(void);
@@ -725,8 +735,13 @@ void Get_component_get_wildcard(void);
 void Reference_setup(void);
 void Reference_get_ref(void);
 void Reference_get_ref_after_add(void);
+void Reference_get_ref_after_add_other(void);
 void Reference_get_ref_after_remove(void);
+void Reference_get_ref_after_remove_other(void);
+void Reference_get_ref_after_remove_component(void);
 void Reference_get_ref_after_delete(void);
+void Reference_get_ref_after_clear(void);
+void Reference_get_ref_after_clear_other(void);
 void Reference_get_ref_after_realloc(void);
 void Reference_get_ref_after_realloc_w_lifecycle(void);
 void Reference_get_ref_staged(void);
@@ -1139,6 +1154,28 @@ void ComponentLifecycle_new_w_table_ctor(void);
 void ComponentLifecycle_new_w_table_on_add_hook(void);
 void ComponentLifecycle_count_in_on_add(void);
 void ComponentLifecycle_count_in_on_remove(void);
+void ComponentLifecycle_illegal_ctor(void);
+void ComponentLifecycle_illegal_dtor(void);
+void ComponentLifecycle_illegal_move(void);
+void ComponentLifecycle_illegal_copy(void);
+void ComponentLifecycle_illegal_move_ctor(void);
+void ComponentLifecycle_illegal_move_and_ctor(void);
+void ComponentLifecycle_illegal_copy_ctor(void);
+void ComponentLifecycle_illegal_copy_and_ctor(void);
+void ComponentLifecycle_illegal_ctor_w_ctor(void);
+void ComponentLifecycle_illegal_dtor_w_dtor(void);
+void ComponentLifecycle_illegal_move_w_move(void);
+void ComponentLifecycle_illegal_copy_w_copy(void);
+void ComponentLifecycle_illegal_move_ctor_w_move_ctor(void);
+void ComponentLifecycle_illegal_copy_ctor_w_copy_ctor(void);
+void ComponentLifecycle_illegal_move_ctor_w_ctor_and_move(void);
+void ComponentLifecycle_illegal_copy_ctor_w_ctor_and_copy(void);
+void ComponentLifecycle_ctor_flags(void);
+void ComponentLifecycle_dtor_flags(void);
+void ComponentLifecycle_move_flags(void);
+void ComponentLifecycle_copy_flags(void);
+void ComponentLifecycle_ctor_move_dtor_flags(void);
+void ComponentLifecycle_move_dtor_flags(void);
 
 // Testsuite 'Pairs'
 void Pairs_type_w_one_pair(void);
@@ -1548,7 +1585,6 @@ void Observer_filter_observer_after_observer(void);
 void Observer_notify_after_defer_batched(void);
 void Observer_notify_after_defer_batched_2_entities_in_table(void);
 void Observer_notify_after_defer_batched_2_entities_in_table_w_tgt(void);
-void Observer_multi_observer_table_fill_w_singleton(void);
 void Observer_wildcard_propagate_w_other_table(void);
 void Observer_add_in_on_add_yield_existing(void);
 void Observer_add_in_on_add_yield_existing_multi(void);
@@ -1603,6 +1639,14 @@ void Observer_on_add_multi_optional(void);
 void Observer_on_remove_multi_optional(void);
 void Observer_on_add_multi_only_optional(void);
 void Observer_on_remove_multi_only_optional(void);
+void Observer_on_add_multi_observers_w_prefab_instance(void);
+void Observer_on_add_overlapping_multi_observers_w_prefab_instance(void);
+void Observer_mask_propagated_component_after_reparent(void);
+void Observer_2_up_terms_w_batched_add(void);
+void Observer_on_table_create(void);
+void Observer_on_table_create_is_deferred(void);
+void Observer_on_table_create_is_deferred_batched(void);
+void Observer_2_children_w_deferred_set(void);
 void Observer_cache_test_1(void);
 void Observer_cache_test_2(void);
 void Observer_cache_test_3(void);
@@ -1906,7 +1950,6 @@ void World_entity_range_set_limit_to_lower(void);
 void World_entity_range_set_limit_to_lower_than_offset(void);
 void World_entity_range_overlapping_new_id(void);
 void World_entity_range_overlapping_new_bulk_id(void);
-void World_dim(void);
 void World_phases(void);
 void World_phases_w_merging(void);
 void World_phases_match_in_create(void);
@@ -1957,11 +2000,14 @@ void World_run_post_frame(void);
 void World_run_post_frame_outside_of_frame(void);
 void World_get_flags(void);
 void World_fini_queue_overflow(void);
+void World_exclusive_on_delete(void);
+void World_exclusive_on_delete_target(void);
+void World_exclusive_on_instantiate(void);
+void World_world_init_fini_log_all(void);
 
 // Testsuite 'WorldInfo'
 void WorldInfo_get_tick(void);
 void WorldInfo_table_count(void);
-void WorldInfo_empty_table_count(void);
 void WorldInfo_table_create_count(void);
 void WorldInfo_table_delete_count(void);
 void WorldInfo_id_tag_component_count(void);
@@ -2001,6 +2047,12 @@ void Commands_defer_add_two(void);
 void Commands_defer_remove(void);
 void Commands_defer_remove_two(void);
 void Commands_defer_set(void);
+void Commands_defer_set_large(void);
+void Commands_defer_set_large_non_trivial(void);
+void Commands_defer_set_non_trivial(void);
+void Commands_defer_batched_set_large(void);
+void Commands_defer_batched_set_large_non_trivial(void);
+void Commands_defer_batched_set_non_trivial(void);
 void Commands_defer_delete(void);
 void Commands_defer_twice(void);
 void Commands_defer_twice_in_progress(void);
@@ -2135,6 +2187,9 @@ void Commands_add_batched_set_with(void);
 void Commands_defer_emplace_after_remove(void);
 void Commands_batched_w_table_change_in_observer(void);
 void Commands_redefine_named_in_threaded_app(void);
+void Commands_batched_cmd_w_component_init(void);
+void Commands_deep_command_nesting(void);
+void Commands_ensure_from_2_stages(void);
 
 // Testsuite 'SingleThreadStaging'
 void SingleThreadStaging_setup(void);
@@ -2294,7 +2349,6 @@ void Error_log_dbg(void);
 void Error_log_log(void);
 void Error_log_warning(void);
 void Error_log_error(void);
-void Error_last_error(void);
 void Error_set_log_level_return(void);
 
 // Testsuite 'StackAlloc'
@@ -2496,6 +2550,10 @@ bake_test_case Entity_testcases[] = {
     {
         "init_id",
         Entity_init_id
+    },
+    {
+        "init_id_exceed_32_bits",
+        Entity_init_id_exceed_32_bits
     },
     {
         "init_id_name",
@@ -2922,6 +2980,10 @@ bake_test_case Entity_testcases[] = {
         Entity_set_version_while_deferred
     },
     {
+        "set_version_on_not_alive",
+        Entity_set_version_on_not_alive
+    },
+    {
         "commit_w_on_add",
         Entity_commit_w_on_add
     },
@@ -3010,6 +3072,10 @@ bake_test_case Entity_testcases[] = {
         Entity_entity_init_w_set_1_comp_1_tag_w_set_defer
     },
     {
+        "entity_init_w_set_1_comp_suspend_defer",
+        Entity_entity_init_w_set_1_comp_suspend_defer
+    },
+    {
         "insert_1_comp",
         Entity_insert_1_comp
     },
@@ -3044,6 +3110,18 @@ bake_test_case Entity_testcases[] = {
     {
         "entity_w_parent_w_set_w_parent",
         Entity_entity_w_parent_w_set_w_parent
+    },
+    {
+        "entity_w_new_id_and_double_dot",
+        Entity_entity_w_new_id_and_double_dot
+    },
+    {
+        "entity_w_existing_id_and_double_dot",
+        Entity_entity_w_existing_id_and_double_dot
+    },
+    {
+        "entity_w_large_id_name",
+        Entity_entity_w_large_id_name
     }
 };
 
@@ -3664,6 +3742,14 @@ bake_test_case New_w_Count_testcases[] = {
         New_w_Count_tag
     },
     {
+        "bulk_ids_w_1_exceed_32_bits",
+        New_w_Count_bulk_ids_w_1_exceed_32_bits
+    },
+    {
+        "bulk_ids_w_2_exceed_32_bits",
+        New_w_Count_bulk_ids_w_2_exceed_32_bits
+    },
+    {
         "bulk_init_empty",
         New_w_Count_bulk_init_empty
     },
@@ -4152,6 +4238,10 @@ bake_test_case Sparse_testcases[] = {
         Sparse_sparse_relationship
     },
     {
+        "sparse_relationship_second",
+        Sparse_sparse_relationship_second
+    },
+    {
         "defer_ensure",
         Sparse_defer_ensure
     },
@@ -4634,6 +4724,10 @@ bake_test_case Hierarchies_testcases[] = {
         Hierarchies_path_w_entity_id
     },
     {
+        "recreated_parent_w_named_children",
+        Hierarchies_recreated_parent_w_named_children
+    },
+    {
         "lookup_depth_0",
         Hierarchies_lookup_depth_0
     },
@@ -5066,12 +5160,32 @@ bake_test_case Reference_testcases[] = {
         Reference_get_ref_after_add
     },
     {
+        "get_ref_after_add_other",
+        Reference_get_ref_after_add_other
+    },
+    {
         "get_ref_after_remove",
         Reference_get_ref_after_remove
     },
     {
+        "get_ref_after_remove_other",
+        Reference_get_ref_after_remove_other
+    },
+    {
+        "get_ref_after_remove_component",
+        Reference_get_ref_after_remove_component
+    },
+    {
         "get_ref_after_delete",
         Reference_get_ref_after_delete
+    },
+    {
+        "get_ref_after_clear",
+        Reference_get_ref_after_clear
+    },
+    {
+        "get_ref_after_clear_other",
+        Reference_get_ref_after_clear_other
     },
     {
         "get_ref_after_realloc",
@@ -6668,6 +6782,94 @@ bake_test_case ComponentLifecycle_testcases[] = {
     {
         "count_in_on_remove",
         ComponentLifecycle_count_in_on_remove
+    },
+    {
+        "illegal_ctor",
+        ComponentLifecycle_illegal_ctor
+    },
+    {
+        "illegal_dtor",
+        ComponentLifecycle_illegal_dtor
+    },
+    {
+        "illegal_move",
+        ComponentLifecycle_illegal_move
+    },
+    {
+        "illegal_copy",
+        ComponentLifecycle_illegal_copy
+    },
+    {
+        "illegal_move_ctor",
+        ComponentLifecycle_illegal_move_ctor
+    },
+    {
+        "illegal_move_and_ctor",
+        ComponentLifecycle_illegal_move_and_ctor
+    },
+    {
+        "illegal_copy_ctor",
+        ComponentLifecycle_illegal_copy_ctor
+    },
+    {
+        "illegal_copy_and_ctor",
+        ComponentLifecycle_illegal_copy_and_ctor
+    },
+    {
+        "illegal_ctor_w_ctor",
+        ComponentLifecycle_illegal_ctor_w_ctor
+    },
+    {
+        "illegal_dtor_w_dtor",
+        ComponentLifecycle_illegal_dtor_w_dtor
+    },
+    {
+        "illegal_move_w_move",
+        ComponentLifecycle_illegal_move_w_move
+    },
+    {
+        "illegal_copy_w_copy",
+        ComponentLifecycle_illegal_copy_w_copy
+    },
+    {
+        "illegal_move_ctor_w_move_ctor",
+        ComponentLifecycle_illegal_move_ctor_w_move_ctor
+    },
+    {
+        "illegal_copy_ctor_w_copy_ctor",
+        ComponentLifecycle_illegal_copy_ctor_w_copy_ctor
+    },
+    {
+        "illegal_move_ctor_w_ctor_and_move",
+        ComponentLifecycle_illegal_move_ctor_w_ctor_and_move
+    },
+    {
+        "illegal_copy_ctor_w_ctor_and_copy",
+        ComponentLifecycle_illegal_copy_ctor_w_ctor_and_copy
+    },
+    {
+        "ctor_flags",
+        ComponentLifecycle_ctor_flags
+    },
+    {
+        "dtor_flags",
+        ComponentLifecycle_dtor_flags
+    },
+    {
+        "move_flags",
+        ComponentLifecycle_move_flags
+    },
+    {
+        "copy_flags",
+        ComponentLifecycle_copy_flags
+    },
+    {
+        "ctor_move_dtor_flags",
+        ComponentLifecycle_ctor_move_dtor_flags
+    },
+    {
+        "move_dtor_flags",
+        ComponentLifecycle_move_dtor_flags
     }
 };
 
@@ -8291,10 +8493,6 @@ bake_test_case Observer_testcases[] = {
         Observer_notify_after_defer_batched_2_entities_in_table_w_tgt
     },
     {
-        "multi_observer_table_fill_w_singleton",
-        Observer_multi_observer_table_fill_w_singleton
-    },
-    {
         "wildcard_propagate_w_other_table",
         Observer_wildcard_propagate_w_other_table
     },
@@ -8509,6 +8707,38 @@ bake_test_case Observer_testcases[] = {
     {
         "on_remove_multi_only_optional",
         Observer_on_remove_multi_only_optional
+    },
+    {
+        "on_add_multi_observers_w_prefab_instance",
+        Observer_on_add_multi_observers_w_prefab_instance
+    },
+    {
+        "on_add_overlapping_multi_observers_w_prefab_instance",
+        Observer_on_add_overlapping_multi_observers_w_prefab_instance
+    },
+    {
+        "mask_propagated_component_after_reparent",
+        Observer_mask_propagated_component_after_reparent
+    },
+    {
+        "2_up_terms_w_batched_add",
+        Observer_2_up_terms_w_batched_add
+    },
+    {
+        "on_table_create",
+        Observer_on_table_create
+    },
+    {
+        "on_table_create_is_deferred",
+        Observer_on_table_create_is_deferred
+    },
+    {
+        "on_table_create_is_deferred_batched",
+        Observer_on_table_create_is_deferred_batched
+    },
+    {
+        "2_children_w_deferred_set",
+        Observer_2_children_w_deferred_set
     },
     {
         "cache_test_1",
@@ -9676,10 +9906,6 @@ bake_test_case World_testcases[] = {
         World_entity_range_overlapping_new_bulk_id
     },
     {
-        "dim",
-        World_dim
-    },
-    {
         "phases",
         World_phases
     },
@@ -9878,6 +10104,22 @@ bake_test_case World_testcases[] = {
     {
         "fini_queue_overflow",
         World_fini_queue_overflow
+    },
+    {
+        "exclusive_on_delete",
+        World_exclusive_on_delete
+    },
+    {
+        "exclusive_on_delete_target",
+        World_exclusive_on_delete_target
+    },
+    {
+        "exclusive_on_instantiate",
+        World_exclusive_on_instantiate
+    },
+    {
+        "world_init_fini_log_all",
+        World_world_init_fini_log_all
     }
 };
 
@@ -9889,10 +10131,6 @@ bake_test_case WorldInfo_testcases[] = {
     {
         "table_count",
         WorldInfo_table_count
-    },
-    {
-        "empty_table_count",
-        WorldInfo_empty_table_count
     },
     {
         "table_create_count",
@@ -10035,6 +10273,30 @@ bake_test_case Commands_testcases[] = {
     {
         "defer_set",
         Commands_defer_set
+    },
+    {
+        "defer_set_large",
+        Commands_defer_set_large
+    },
+    {
+        "defer_set_large_non_trivial",
+        Commands_defer_set_large_non_trivial
+    },
+    {
+        "defer_set_non_trivial",
+        Commands_defer_set_non_trivial
+    },
+    {
+        "defer_batched_set_large",
+        Commands_defer_batched_set_large
+    },
+    {
+        "defer_batched_set_large_non_trivial",
+        Commands_defer_batched_set_large_non_trivial
+    },
+    {
+        "defer_batched_set_non_trivial",
+        Commands_defer_batched_set_non_trivial
     },
     {
         "defer_delete",
@@ -10571,6 +10833,18 @@ bake_test_case Commands_testcases[] = {
     {
         "redefine_named_in_threaded_app",
         Commands_redefine_named_in_threaded_app
+    },
+    {
+        "batched_cmd_w_component_init",
+        Commands_batched_cmd_w_component_init
+    },
+    {
+        "deep_command_nesting",
+        Commands_deep_command_nesting
+    },
+    {
+        "ensure_from_2_stages",
+        Commands_ensure_from_2_stages
     }
 };
 
@@ -11163,10 +11437,6 @@ bake_test_case Error_testcases[] = {
         Error_log_error
     },
     {
-        "last_error",
-        Error_last_error
-    },
-    {
         "set_log_level_return",
         Error_set_log_level_return
     }
@@ -11196,7 +11466,7 @@ static bake_test_suite suites[] = {
         "Entity",
         NULL,
         NULL,
-        138,
+        144,
         Entity_testcases
     },
     {
@@ -11238,7 +11508,7 @@ static bake_test_suite suites[] = {
         "New_w_Count",
         NULL,
         NULL,
-        20,
+        22,
         New_w_Count_testcases
     },
     {
@@ -11266,7 +11536,7 @@ static bake_test_suite suites[] = {
         "Sparse",
         NULL,
         NULL,
-        87,
+        88,
         Sparse_testcases
     },
     {
@@ -11280,7 +11550,7 @@ static bake_test_suite suites[] = {
         "Hierarchies",
         Hierarchies_setup,
         NULL,
-        105,
+        106,
         Hierarchies_testcases
     },
     {
@@ -11308,7 +11578,7 @@ static bake_test_suite suites[] = {
         "Reference",
         Reference_setup,
         NULL,
-        13,
+        18,
         Reference_testcases
     },
     {
@@ -11364,7 +11634,7 @@ static bake_test_suite suites[] = {
         "ComponentLifecycle",
         ComponentLifecycle_setup,
         NULL,
-        98,
+        120,
         ComponentLifecycle_testcases
     },
     {
@@ -11385,7 +11655,7 @@ static bake_test_suite suites[] = {
         "Observer",
         NULL,
         NULL,
-        229,
+        236,
         Observer_testcases
     },
     {
@@ -11434,14 +11704,14 @@ static bake_test_suite suites[] = {
         "World",
         World_setup,
         NULL,
-        67,
+        70,
         World_testcases
     },
     {
         "WorldInfo",
         NULL,
         NULL,
-        7,
+        6,
         WorldInfo_testcases
     },
     {
@@ -11455,7 +11725,7 @@ static bake_test_suite suites[] = {
         "Commands",
         NULL,
         NULL,
-        141,
+        150,
         Commands_testcases
     },
     {
@@ -11497,7 +11767,7 @@ static bake_test_suite suites[] = {
         "Error",
         Error_setup,
         NULL,
-        13,
+        12,
         Error_testcases
     },
     {

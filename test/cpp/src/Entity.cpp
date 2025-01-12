@@ -3998,6 +3998,20 @@ void Entity_entity_w_type(void) {
     test_assert(e == e_2);
 }
 
+void Entity_prefab_w_type(void) {
+    flecs::world ecs;
+
+    auto e = ecs.prefab<EntityType>();
+
+    test_str(e.name().c_str(), "EntityType");
+    test_str(e.path().c_str(), "::EntityType");
+    test_assert(!e.has<flecs::Component>());
+    test_assert(e.has(flecs::Prefab));
+
+    auto e_2 = ecs.entity<EntityType>();
+    test_assert(e == e_2);
+}
+
 struct Turret {
     struct Base { };
 };
@@ -4092,6 +4106,7 @@ void Entity_prefab_hierarchy_w_child_override(void) {
     test_assert(i != 0);
     auto ib = i.lookup("Base");
     test_assert(ib != 0);
+
     test_assert(ib.has<Foo>());
     test_assert(ib.has<Bar>());
 }
@@ -4863,3 +4878,43 @@ void Entity_get_ref_pair_second_invalid_type(void) {
     test_expect_abort();
     world.entity().get_ref_second<Position>(v);
 }
+
+void Entity_iter_type(void) {
+    flecs::world world;
+
+    flecs::entity e = world.entity().add<Position>().add<Velocity>();
+
+    int32_t count = 0;
+    bool pos_found = false;
+    bool velocity_found = false;
+
+    for (auto id : e.type()) {
+        count ++;
+        if (id == world.id<Position>()) {
+            pos_found = true;
+        }
+        if (id == world.id<Velocity>()) {
+            velocity_found = true;
+        }
+    }
+
+    test_int(count, 2);
+    test_assert(pos_found == true);
+    test_assert(velocity_found == true);
+}
+
+void Entity_iter_empty_type(void) {
+    flecs::world world;
+
+    flecs::entity e = world.entity();
+
+    int32_t count = 0;
+
+    for (auto id : e.type()) {
+        test_assert(id != 0);
+        count ++;
+    }
+
+    test_int(count, 0);
+}
+

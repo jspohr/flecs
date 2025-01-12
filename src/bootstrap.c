@@ -708,6 +708,7 @@ void flecs_bootstrap(
     ecs_make_alive(world, EcsChildOf);
     ecs_make_alive(world, EcsFlecs);
     ecs_make_alive(world, EcsFlecsCore);
+    ecs_make_alive(world, EcsFlecsInternals);
     ecs_make_alive(world, EcsOnAdd);
     ecs_make_alive(world, EcsOnRemove);
     ecs_make_alive(world, EcsOnSet);
@@ -876,44 +877,6 @@ void flecs_bootstrap(
     flecs_bootstrap_entity(world, EcsMonitor, "EcsMonitor", EcsFlecsCore);
     flecs_bootstrap_entity(world, EcsOnTableCreate, "OnTableCreate", EcsFlecsCore);
     flecs_bootstrap_entity(world, EcsOnTableDelete, "OnTableDelete", EcsFlecsCore);
-    flecs_bootstrap_entity(world, EcsOnTableEmpty, "OnTableEmpty", EcsFlecsCore);
-    flecs_bootstrap_entity(world, EcsOnTableFill, "OnTableFilled", EcsFlecsCore);
-
-    /* Unqueryable entities */
-    ecs_add_id(world, EcsThis, EcsNotQueryable);
-    ecs_add_id(world, EcsWildcard, EcsNotQueryable);
-    ecs_add_id(world, EcsAny, EcsNotQueryable);
-    ecs_add_id(world, EcsVariable, EcsNotQueryable);
-
-    /* Tag relationships (relationships that should never have data) */
-    ecs_add_id(world, EcsIsA, EcsPairIsTag);
-    ecs_add_id(world, EcsChildOf, EcsPairIsTag);
-    ecs_add_id(world, EcsSlotOf, EcsPairIsTag);
-    ecs_add_id(world, EcsDependsOn, EcsPairIsTag);
-    ecs_add_id(world, EcsFlag, EcsPairIsTag);
-    ecs_add_id(world, EcsWith, EcsPairIsTag);
-
-    /* Exclusive properties */
-    ecs_add_id(world, EcsChildOf, EcsExclusive);
-    ecs_add_id(world, EcsOnDelete, EcsExclusive);
-    ecs_add_id(world, EcsOnDeleteTarget, EcsExclusive);
-    ecs_add_id(world, EcsOnInstantiate, EcsExclusive);
-
-    /* Relationships */
-    ecs_add_id(world, EcsChildOf, EcsRelationship);
-    ecs_add_id(world, EcsIsA, EcsRelationship);
-    ecs_add_id(world, EcsSlotOf, EcsRelationship);
-    ecs_add_id(world, EcsDependsOn, EcsRelationship);
-    ecs_add_id(world, EcsWith, EcsRelationship);
-    ecs_add_id(world, EcsOnDelete, EcsRelationship);
-    ecs_add_id(world, EcsOnDeleteTarget, EcsRelationship);
-    ecs_add_id(world, EcsOnInstantiate, EcsRelationship);
-    ecs_add_id(world, ecs_id(EcsIdentifier), EcsRelationship);
-
-    /* Targets */
-    ecs_add_id(world, EcsOverride, EcsTarget);
-    ecs_add_id(world, EcsInherit, EcsTarget);
-    ecs_add_id(world, EcsDontInherit, EcsTarget);
 
     /* Sync properties of ChildOf and Identifier with bootstrapped flags */
     ecs_add_pair(world, EcsChildOf, EcsOnDeleteTarget, EcsDelete);
@@ -1069,6 +1032,42 @@ void flecs_bootstrap(
     /* Set scope back to flecs core */
     ecs_set_scope(world, EcsFlecsCore);
 
+    /* Exclusive properties */
+    ecs_add_id(world, EcsChildOf, EcsExclusive);
+    ecs_add_id(world, EcsOnDelete, EcsExclusive);
+    ecs_add_id(world, EcsOnDeleteTarget, EcsExclusive);
+    ecs_add_id(world, EcsOnInstantiate, EcsExclusive);
+
+    /* Unqueryable entities */
+    ecs_add_id(world, EcsThis, EcsNotQueryable);
+    ecs_add_id(world, EcsWildcard, EcsNotQueryable);
+    ecs_add_id(world, EcsAny, EcsNotQueryable);
+    ecs_add_id(world, EcsVariable, EcsNotQueryable);
+
+    /* Tag relationships (relationships that should never have data) */
+    ecs_add_id(world, EcsIsA, EcsPairIsTag);
+    ecs_add_id(world, EcsChildOf, EcsPairIsTag);
+    ecs_add_id(world, EcsSlotOf, EcsPairIsTag);
+    ecs_add_id(world, EcsDependsOn, EcsPairIsTag);
+    ecs_add_id(world, EcsFlag, EcsPairIsTag);
+    ecs_add_id(world, EcsWith, EcsPairIsTag);
+
+    /* Relationships */
+    ecs_add_id(world, EcsChildOf, EcsRelationship);
+    ecs_add_id(world, EcsIsA, EcsRelationship);
+    ecs_add_id(world, EcsSlotOf, EcsRelationship);
+    ecs_add_id(world, EcsDependsOn, EcsRelationship);
+    ecs_add_id(world, EcsWith, EcsRelationship);
+    ecs_add_id(world, EcsOnDelete, EcsRelationship);
+    ecs_add_id(world, EcsOnDeleteTarget, EcsRelationship);
+    ecs_add_id(world, EcsOnInstantiate, EcsRelationship);
+    ecs_add_id(world, ecs_id(EcsIdentifier), EcsRelationship);
+
+    /* Targets */
+    ecs_add_id(world, EcsOverride, EcsTarget);
+    ecs_add_id(world, EcsInherit, EcsTarget);
+    ecs_add_id(world, EcsDontInherit, EcsTarget);
+
     /* Traversable relationships are always acyclic */
     ecs_add_pair(world, EcsTraversable, EcsWith, EcsAcyclic);
 
@@ -1101,7 +1100,6 @@ void flecs_bootstrap(
     /* Inherited components */
     ecs_add_pair(world, EcsIsA, EcsOnInstantiate, EcsInherit);
     ecs_add_pair(world, EcsDependsOn, EcsOnInstantiate, EcsInherit);
-    ecs_add_pair(world, EcsDisabled, EcsOnInstantiate, EcsInherit);
     
     /* Run bootstrap functions for other parts of the code */
     flecs_bootstrap_hierarchy(world);

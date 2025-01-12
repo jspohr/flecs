@@ -202,6 +202,7 @@ void SystemPeriodic_match_2_systems_w_populated_table(void);
 void SystemPeriodic_on_period(void);
 void SystemPeriodic_on_period_long_delta(void);
 void SystemPeriodic_disabled(void);
+void SystemPeriodic_2_disabled(void);
 void SystemPeriodic_disabled_feature(void);
 void SystemPeriodic_disabled_nested_feature(void);
 void SystemPeriodic_two_refs(void);
@@ -456,6 +457,8 @@ void Rest_request_commands_no_frames(void);
 void Rest_request_commands_no_commands(void);
 void Rest_request_commands_garbage_collect(void);
 void Rest_script_error(void);
+void Rest_script_update(void);
+void Rest_script_update_w_body(void);
 void Rest_import_rest_after_mini(void);
 void Rest_get_pipeline_stats_after_delete_system(void);
 void Rest_request_world_summary_before_monitor_sys_run(void);
@@ -1295,6 +1298,10 @@ bake_test_case SystemPeriodic_testcases[] = {
     {
         "disabled",
         SystemPeriodic_disabled
+    },
+    {
+        "2_disabled",
+        SystemPeriodic_2_disabled
     },
     {
         "disabled_feature",
@@ -2209,6 +2216,14 @@ bake_test_case Rest_testcases[] = {
         Rest_script_error
     },
     {
+        "script_update",
+        Rest_script_update
+    },
+    {
+        "script_update_w_body",
+        Rest_script_update_w_body
+    },
+    {
         "import_rest_after_mini",
         Rest_import_rest_after_mini
     },
@@ -2559,7 +2574,7 @@ static bake_test_suite suites[] = {
         "SystemPeriodic",
         NULL,
         NULL,
-        47,
+        48,
         SystemPeriodic_testcases
     },
     {
@@ -2675,7 +2690,7 @@ static bake_test_suite suites[] = {
         "Rest",
         NULL,
         NULL,
-        18,
+        20,
         Rest_testcases
     },
     {

@@ -27,6 +27,12 @@ extern const ecs_entity_t EcsFlag;
 #define ECS_MAX_JOBS_PER_WORKER (16)
 #define ECS_MAX_DEFER_STACK (8)
 
+/* The bitmask used when determining the table version array index */
+#define ECS_TABLE_VERSION_ARRAY_BITMASK (0xff)
+
+/* The number of table versions to split tables across */
+#define ECS_TABLE_VERSION_ARRAY_SIZE (ECS_TABLE_VERSION_ARRAY_BITMASK + 1)
+
 /* Magic number for a flecs object */
 #define ECS_OBJECT_MAGIC (0x6563736f)
 
@@ -84,7 +90,6 @@ typedef struct ecs_table_cache_list_t {
 typedef struct ecs_table_cache_t {
     ecs_map_t index; /* <table_id, T*> */
     ecs_table_cache_list_t tables;
-    ecs_table_cache_list_t empty_tables;
 } ecs_table_cache_t;
 
 /* World level allocators are for operations that are not multithreaded */
@@ -201,10 +206,10 @@ struct ecs_stage_t {
     /* Zero if not deferred, positive if deferred, negative if suspended */
     int32_t defer;
 
-    /* Command queue stack, for nested execution */
+    /* Command queue */
     ecs_commands_t *cmd;
-    ecs_commands_t cmd_stack[ECS_MAX_DEFER_STACK];
-    int32_t cmd_sp;
+    ecs_commands_t cmd_stack[2];     /* Two so we can flush one & populate the other */
+    bool cmd_flushing;               /* Ensures only one defer_end call flushes */
 
     /* Thread context */
     ecs_world_t *thread_ctx;         /* Points to stage when a thread stage */
@@ -231,10 +236,10 @@ struct ecs_stage_t {
     ecs_vec_t variables;
     ecs_vec_t operations;
 
-    /* Temporary token storage for DSL parser. This allows for parsing and 
-     * interpreting a term without having to do allocations. */
-    char parser_tokens[1024];
-    char *parser_token; /* Pointer to next token */
+#ifdef FLECS_SCRIPT
+    /* Thread specific runtime for script execution */
+    ecs_script_runtime_t *runtime;
+#endif
 };
 
 /* Component monitor */
@@ -270,9 +275,6 @@ typedef struct ecs_store_t {
     /* Root table */
     ecs_table_t root;
 
-    /* Observers */
-    ecs_sparse_t observers;          /* sparse<table_id, ecs_table_t> */
-
     /* Records cache */
     ecs_vec_t records;
 
@@ -299,9 +301,9 @@ struct ecs_world_t {
     ecs_header_t hdr;
 
     /* --  Type metadata -- */
-    ecs_id_record_t *id_index_lo;
+    ecs_id_record_t **id_index_lo;
     ecs_map_t id_index_hi;           /* map<id, ecs_id_record_t*> */
-    ecs_sparse_t type_info;          /* sparse<type_id, type_info_t> */
+    ecs_map_t type_info;             /* map<type_id, type_info_t> */
 
     /* -- Cached handle to id records -- */
     ecs_id_record_t *idr_wildcard;
@@ -319,15 +321,15 @@ struct ecs_world_t {
     /* Unique id per generated event used to prevent duplicate notifications */
     int32_t event_id;
 
+    /* Array of table versions used with component refs to determine if the 
+     * cached pointer is still valid. */
+    uint32_t table_version[ECS_TABLE_VERSION_ARRAY_SIZE];
+
     /* Is entity range checking enabled? */
     bool range_check_enabled;
 
     /* --  Data storage -- */
     ecs_store_t store;
-
-    /* --  Pending table event buffers -- */
-    ecs_sparse_t *pending_buffer;    /* sparse<table_id, ecs_table_t*> */
-    ecs_sparse_t *pending_tables;    /* sparse<table_id, ecs_table_t*> */
 
     /* Used to track when cache needs to be updated */
     ecs_monitor_set_t monitors;      /* map<id, ecs_monitor_t> */
@@ -342,6 +344,9 @@ struct ecs_world_t {
     /* -- Staging -- */
     ecs_stage_t **stages;            /* Stages */
     int32_t stage_count;             /* Number of stages */
+
+    /* -- Component ids -- */
+    ecs_vec_t component_ids;         /* World local component ids */
 
     /* Internal callback for command inspection. Only one callback can be set at
      * a time. After assignment the action will become active at the start of 

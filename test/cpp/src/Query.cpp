@@ -523,6 +523,42 @@ void Query_find_w_entity(void) {
     test_assert(r == e2);
 }
 
+void Query_find_w_match_empty_tables(void) {
+    flecs::world ecs;
+
+    auto e1 = ecs.entity().set<Position>({10, 20}).add<Velocity>();
+    e1.destruct(); // creates empty table
+    auto e2 = ecs.entity().set<Position>({20, 30});
+
+    auto q = ecs.query_builder<Position>()
+        .query_flags(EcsQueryMatchEmptyTables)
+        .build();
+
+    auto r = q.find([](Position& p) {
+        return p.x == 20;
+    });
+
+    test_assert(r == e2);
+}
+
+void Query_find_w_entity_w_match_empty_tables(void) {
+    flecs::world ecs;
+
+    auto e1 = ecs.entity().set<Position>({10, 20}).add<Velocity>();
+    e1.destruct(); // creates empty table
+    auto e2 = ecs.entity().set<Position>({20, 30});
+
+    auto q = ecs.query_builder<Position>()
+        .query_flags(EcsQueryMatchEmptyTables)
+        .build();
+
+    auto r = q.find([](flecs::entity e, Position& p) {
+        return p.x == 20;
+    });
+
+    test_assert(r == e2);
+}
+
 // Generic lambdas are a C++14 feature.
 
 struct GenericLambdaFindEntity {
@@ -954,6 +990,44 @@ void Query_each_sparse(void) {
     const Position *p = entity.get<Position>();
     test_int(p->x, 11);
     test_int(p->y, 22);
+}
+
+void Query_each_sparse_many(void) {
+    flecs::world world;
+
+    world.component<Position>().add(flecs::Sparse);
+    world.component<Velocity>();
+    
+    std::vector<flecs::entity> entities;
+
+    for (int i = 0; i < 2000; i ++) {
+        entities.push_back(world.entity()
+            .set<Position>({
+                static_cast<float>(10 + i), 
+                static_cast<float>(20 + i)
+            })
+            .set<Velocity>({
+                static_cast<float>(i), 
+                static_cast<float>(i)
+            }));
+    }
+
+    auto q = world.query<Position, Velocity>();
+
+    q.each([](Position& p, Velocity& v) {
+        p.x += v.x;
+        p.y += v.y;
+    });
+
+    for (int i = 0; i < 2000; i ++) {
+        flecs::entity e = entities[i];
+        const Position *p = e.get<Position>();
+        test_int(p->x, 10 + i * 2);
+        test_int(p->y, 20 + i * 2);
+        const Velocity *v = e.get<Velocity>();
+        test_int(v->x, i);
+        test_int(v->y, i);
+    }
 }
 
 // Generic lambdas are a C++14 feature.
@@ -2710,6 +2784,88 @@ void Query_worker_iter_captured_query(void) {
     [=]() {
         int count = 0;
         q.iter().worker(1, 3).each([&](flecs::entity e, Position& p) {
+            test_assert(e == e_2);
+            test_int(p.x, 20);
+            test_int(p.y, 30);
+            count ++;
+        });
+        test_int(count, 1);
+    }();
+}
+
+
+void Query_set_group_captured_query(void) {
+    flecs::world ecs;
+
+    flecs::entity Rel = ecs.entity();
+    flecs::entity TgtA = ecs.entity();
+    flecs::entity TgtB = ecs.entity();
+
+    flecs::query<Position> q = ecs.query_builder<Position>()
+        .group_by(Rel)
+        .build();
+
+    /* flecs::entity e_1 = */ ecs.entity().set<Position>({10, 20}).add(Rel, TgtA);
+    flecs::entity e_2 = ecs.entity().set<Position>({20, 30}).add(Rel, TgtB);
+
+    [=]() {
+        int count = 0;
+        q.set_group(TgtB).each([&](flecs::entity e, Position& p) {
+            test_assert(e == e_2);
+            test_int(p.x, 20);
+            test_int(p.y, 30);
+            count ++;
+        });
+        test_int(count, 1);
+    }();
+}
+
+void Query_set_var_captured_query(void) {
+    flecs::world ecs;
+
+    flecs::entity Rel = ecs.entity();
+    flecs::entity TgtA = ecs.entity();
+    flecs::entity TgtB = ecs.entity();
+
+    flecs::query<Position> q = ecs.query_builder<Position>()
+        .with(Rel, "$var")
+        .build();
+
+    /* flecs::entity e_1 = */ ecs.entity().set<Position>({10, 20}).add(Rel, TgtA);
+    flecs::entity e_2 = ecs.entity().set<Position>({20, 30}).add(Rel, TgtB);
+
+    [=]() {
+        int count = 0;
+        q.set_var("var", TgtB).each([&](flecs::entity e, Position& p) {
+            test_assert(e == e_2);
+            test_int(p.x, 20);
+            test_int(p.y, 30);
+            count ++;
+        });
+        test_int(count, 1);
+    }();
+}
+
+void Query_set_var_id_captured_query(void) {
+    flecs::world ecs;
+
+    flecs::entity Rel = ecs.entity();
+    flecs::entity TgtA = ecs.entity();
+    flecs::entity TgtB = ecs.entity();
+
+    flecs::query<Position> q = ecs.query_builder<Position>()
+        .with(Rel, "$var")
+        .build();
+
+    int var = q.find_var("var");
+    test_assert(var != -1);
+
+    /* flecs::entity e_1 = */ ecs.entity().set<Position>({10, 20}).add(Rel, TgtA);
+    flecs::entity e_2 = ecs.entity().set<Position>({20, 30}).add(Rel, TgtB);
+
+    [=]() {
+        int count = 0;
+        q.set_var(var, TgtB).each([&](flecs::entity e, Position& p) {
             test_assert(e == e_2);
             test_int(p.x, 20);
             test_int(p.y, 30);

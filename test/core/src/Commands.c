@@ -268,6 +268,248 @@ void Commands_defer_set(void) {
     ecs_fini(world);
 }
 
+static
+void dummy_xtor(void *ptr, ecs_size_t count, const ecs_type_info_t *ti) { }
+
+static
+void dummy_move(void *ptr, void *src, ecs_size_t count, const ecs_type_info_t *ti) { 
+    ecs_os_memcpy(ptr, src, count * ti->size);
+}
+
+typedef struct Large {
+    int32_t largeArray[2048];
+} Large;
+
+void Commands_defer_set_large(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_COMPONENT(world, Large);
+
+    ecs_entity_t e = ecs_new(world);
+
+    ecs_defer_begin(world);
+
+    Large *l = ecs_ensure(world, e, Large);
+    test_assert(l != NULL);
+    for (int i = 0; i < 2048; i ++) {
+        l->largeArray[i] = i;
+    }
+    ecs_modified(world, e, Large);
+
+    test_assert(!ecs_has(world, e, Large));
+    ecs_defer_end(world);
+
+    test_assert(ecs_has(world, e, Large));
+
+    {
+        const Large *l = ecs_get(world, e, Large);
+        test_assert(l != NULL);
+        for (int i = 0; i < 2048; i ++) {
+            test_int(l->largeArray[i], i);
+        }
+    }
+
+    ecs_fini(world);
+}
+
+void Commands_defer_set_large_non_trivial(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_COMPONENT(world, Large);
+
+    ecs_set_hooks(world, Large, {
+        .ctor = dummy_xtor,
+        .dtor = dummy_xtor,
+        .move = dummy_move
+    });
+
+    ecs_entity_t e = ecs_new(world);
+
+    ecs_defer_begin(world);
+
+    Large *l = ecs_ensure(world, e, Large);
+    test_assert(l != NULL);
+    for (int i = 0; i < 2048; i ++) {
+        l->largeArray[i] = i;
+    }
+    ecs_modified(world, e, Large);
+
+    test_assert(!ecs_has(world, e, Large));
+    ecs_defer_end(world);
+    test_assert(ecs_has(world, e, Large));
+
+    {
+        const Large *l = ecs_get(world, e, Large);
+        test_assert(l != NULL);
+        for (int i = 0; i < 2048; i ++) {
+            test_int(l->largeArray[i], i);
+        }
+    }
+
+    ecs_fini(world);
+}
+
+void Commands_defer_set_non_trivial(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_COMPONENT(world, Velocity);
+
+    ecs_set_hooks(world, Velocity, {
+        .ctor = dummy_xtor,
+        .dtor = dummy_xtor,
+        .move = dummy_move
+    });
+
+    ecs_entity_t e = ecs_new(world);
+
+    ecs_defer_begin(world);
+
+    ecs_set(world, e, Velocity, {1, 2});
+
+    test_assert(!ecs_has(world, e, Velocity));
+    ecs_defer_end(world);
+
+    test_assert(ecs_has(world, e, Velocity));
+
+    {
+        const Velocity *v = ecs_get(world, e, Velocity);
+        test_assert(v != NULL);
+        test_int(v->x, 1);
+        test_int(v->y, 2);
+    }
+
+    ecs_fini(world);
+}
+
+void Commands_defer_batched_set_large(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_COMPONENT(world, Position);
+    ECS_COMPONENT(world, Large);
+
+    ecs_entity_t e = ecs_new(world);
+
+    ecs_defer_begin(world);
+
+    ecs_set(world, e, Position, {10, 20});
+    Large *l = ecs_ensure(world, e, Large);
+    test_assert(l != NULL);
+    for (int i = 0; i < 2048; i ++) {
+        l->largeArray[i] = i;
+    }
+    ecs_modified(world, e, Large);
+
+    test_assert(!ecs_has(world, e, Position));
+    test_assert(!ecs_has(world, e, Large));
+    ecs_defer_end(world);
+
+    test_assert(ecs_has(world, e, Position));
+    test_assert(ecs_has(world, e, Large));
+
+    {
+        const Position *p = ecs_get(world, e, Position);
+        test_assert(p != NULL);
+        test_int(p->x, 10);
+        test_int(p->y, 20);
+
+        const Large *l = ecs_get(world, e, Large);
+        test_assert(l != NULL);
+        for (int i = 0; i < 2048; i ++) {
+            test_int(l->largeArray[i], i);
+        }
+    }
+
+    ecs_fini(world);
+}
+
+void Commands_defer_batched_set_large_non_trivial(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_COMPONENT(world, Position);
+    ECS_COMPONENT(world, Large);
+
+    ecs_set_hooks(world, Large, {
+        .ctor = dummy_xtor,
+        .dtor = dummy_xtor,
+        .move = dummy_move
+    });
+
+    ecs_entity_t e = ecs_new(world);
+
+    ecs_defer_begin(world);
+
+    ecs_set(world, e, Position, {10, 20});
+    Large *l = ecs_ensure(world, e, Large);
+    test_assert(l != NULL);
+    for (int i = 0; i < 2048; i ++) {
+        l->largeArray[i] = i;
+    }
+    ecs_modified(world, e, Large);
+
+    test_assert(!ecs_has(world, e, Position));
+    test_assert(!ecs_has(world, e, Large));
+    ecs_defer_end(world);
+
+    test_assert(ecs_has(world, e, Position));
+    test_assert(ecs_has(world, e, Large));
+
+    {
+        const Position *p = ecs_get(world, e, Position);
+        test_assert(p != NULL);
+        test_int(p->x, 10);
+        test_int(p->y, 20);
+
+        const Large *l = ecs_get(world, e, Large);
+        test_assert(l != NULL);
+        for (int i = 0; i < 2048; i ++) {
+            test_int(l->largeArray[i], i);
+        }
+    }
+
+    ecs_fini(world);
+}
+
+void Commands_defer_batched_set_non_trivial(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_COMPONENT(world, Position);
+    ECS_COMPONENT(world, Velocity);
+
+    ecs_set_hooks(world, Velocity, {
+        .ctor = dummy_xtor,
+        .dtor = dummy_xtor,
+        .move = dummy_move
+    });
+
+    ecs_entity_t e = ecs_new(world);
+
+    ecs_defer_begin(world);
+
+    ecs_set(world, e, Position, {10, 20});
+    ecs_set(world, e, Velocity, {1, 2});
+
+    test_assert(!ecs_has(world, e, Position));
+    test_assert(!ecs_has(world, e, Velocity));
+    ecs_defer_end(world);
+
+    test_assert(ecs_has(world, e, Position));
+    test_assert(ecs_has(world, e, Velocity));
+
+    {
+        const Position *p = ecs_get(world, e, Position);
+        test_assert(p != NULL);
+        test_int(p->x, 10);
+        test_int(p->y, 20);
+
+        const Velocity *v = ecs_get(world, e, Velocity);
+        test_assert(v != NULL);
+        test_int(v->x, 1);
+        test_int(v->y, 2);
+    }
+
+    ecs_fini(world);
+}
+
 void Commands_defer_delete(void) {
     ecs_world_t *world = ecs_mini();
 
@@ -4206,6 +4448,119 @@ void Commands_redefine_named_in_threaded_app(void) {
     ecs_entity_t p2 = ecs_get_target(world, c2, EcsChildOf, 0);
     test_assert(p2 != 0);
     test_assert(p1 == p2);
+
+    ecs_fini(world);
+}
+
+void Commands_batched_cmd_w_component_init(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Foo);
+
+    ecs_entity_t parent = ecs_new(world);
+
+    ecs_defer_begin(world);
+
+    ecs_add(world, parent, Foo);
+
+    ecs_entity_t comp = ecs_component(world, {
+        .entity = ecs_entity(world, {
+            .parent = parent,
+            .name = "Bar"
+        }),
+        .type.size = 4,
+        .type.alignment = 4
+    });
+
+    test_assert(comp != 0);
+    test_str(ecs_get_name(world, comp), "Bar");
+    {
+        const EcsComponent *ptr = ecs_get(world, comp, EcsComponent);
+        test_assert(ptr != NULL);
+        test_int(ptr->size, 4);
+        test_int(ptr->alignment, 4);
+    }
+
+    ecs_defer_end(world);
+
+    ecs_fini(world);
+}
+
+typedef struct TestNestEvent {
+    int32_t depth;
+} TestNestEvent;
+
+static ECS_COMPONENT_DECLARE(TestNestEvent);
+
+static int test_nest_invoked = 0;
+
+static
+void test_nest_observer(ecs_iter_t *it) {
+    TestNestEvent *param = it->param;
+
+    TestNestEvent evt = { .depth = param->depth - 1 };
+
+    test_nest_invoked ++;
+
+    if (param->depth) {
+        ecs_enqueue(it->world, &(ecs_event_desc_t) {
+            .event = ecs_id(TestNestEvent),
+            .param = &evt,
+            .entity = EcsAny
+        });
+    }
+}
+
+void Commands_deep_command_nesting(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_COMPONENT_DEFINE(world, TestNestEvent);
+
+    ecs_observer(world, {
+        .events = { ecs_id(TestNestEvent) },
+        .query = { .terms = {{ .id = EcsAny }}},
+        .callback = test_nest_observer
+    });
+
+    ecs_log_set_level(0);
+    ecs_emit(world, &(ecs_event_desc_t) {
+        .event = ecs_id(TestNestEvent),
+        .param = &(TestNestEvent){ .depth = 32 },
+        .entity = EcsAny
+    });
+
+    test_int(test_nest_invoked, 33);
+
+    ecs_log_set_level(-1);
+
+    ecs_fini(world);
+}
+
+void Commands_ensure_from_2_stages(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_COMPONENT(world, Position);
+    ECS_TAG(world, Foo);
+
+    ecs_entity_t e = ecs_new(world);
+
+    ecs_set_stage_count(world, 2);
+    ecs_world_t *s1 = ecs_get_stage(world, 0);
+    ecs_world_t *s2 = ecs_get_stage(world, 1);
+
+    ecs_readonly_begin(world, false);
+
+    ecs_ensure(s1, e, Position);
+    ecs_ensure(s2, e, Position);
+    ecs_add(s2, e, Foo);
+
+    test_assert(!ecs_has(world, e, Position));
+    test_assert(!ecs_has(world, e, Foo));
+
+    ecs_readonly_end(world);
+
+    test_assert(ecs_has(world, e, Position));
+    test_assert(ecs_has(world, e, Foo));
 
     ecs_fini(world);
 }

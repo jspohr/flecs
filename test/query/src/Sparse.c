@@ -865,8 +865,8 @@ void Sparse_1_sparse_up(void) {
     ecs_iter_t it = ecs_query_iter(world, q);
     test_bool(true, ecs_query_next(&it));
     test_int(2, it.count);
-    test_uint(e1, it.entities[0]);
-    test_uint(e2, it.entities[1]);
+    test_uint(e3, it.entities[0]);
+    test_uint(e4, it.entities[1]);
     {
         Position *p = ecs_field_at(&it, Position, 0, 0);
         test_assert(p != NULL);
@@ -875,8 +875,8 @@ void Sparse_1_sparse_up(void) {
 
     test_bool(true, ecs_query_next(&it));
     test_int(2, it.count);
-    test_uint(e3, it.entities[0]);
-    test_uint(e4, it.entities[1]);
+    test_uint(e1, it.entities[0]);
+    test_uint(e2, it.entities[1]);
     {
         Position *p = ecs_field_at(&it, Position, 0, 0);
         test_assert(p != NULL);
@@ -1027,8 +1027,8 @@ void Sparse_1_sparse_written_up(void) {
     ecs_iter_t it = ecs_query_iter(world, q);
     test_bool(true, ecs_query_next(&it));
     test_int(2, it.count);
-    test_uint(e1, it.entities[0]);
-    test_uint(e2, it.entities[1]);
+    test_uint(e3, it.entities[0]);
+    test_uint(e4, it.entities[1]);
     {
         Position *p = ecs_field_at(&it, Position, 1, 0);
         test_assert(p != NULL);
@@ -1037,8 +1037,8 @@ void Sparse_1_sparse_written_up(void) {
 
     test_bool(true, ecs_query_next(&it));
     test_int(2, it.count);
-    test_uint(e3, it.entities[0]);
-    test_uint(e4, it.entities[1]);
+    test_uint(e1, it.entities[0]);
+    test_uint(e2, it.entities[1]);
     {
         Position *p = ecs_field_at(&it, Position, 1, 0);
         test_assert(p != NULL);
@@ -1079,22 +1079,6 @@ void Sparse_1_sparse_written_self_up(void) {
     ecs_iter_t it = ecs_query_iter(world, q);
     test_bool(true, ecs_query_next(&it));
     test_int(2, it.count);
-    test_uint(e1, it.entities[0]);
-    {
-        Position *p = ecs_field_at(&it, Position, 1, 0);
-        test_assert(p != NULL);
-        test_int(p->x, 10); test_int(p->y, 20);
-    }
-
-    test_uint(e2, it.entities[1]);
-    {
-        Position *p = ecs_field_at(&it, Position, 1, 1);
-        test_assert(p != NULL);
-        test_int(p->x, 30); test_int(p->y, 40);
-    }
-
-    test_bool(true, ecs_query_next(&it));
-    test_int(2, it.count);
     test_uint(e3, it.entities[0]);
     {
         Position *p = ecs_field_at(&it, Position, 1, 0);
@@ -1107,6 +1091,22 @@ void Sparse_1_sparse_written_self_up(void) {
         Position *p = ecs_field_at(&it, Position, 1, 1);
         test_assert(p != NULL);
         test_int(p->x, 1); test_int(p->y, 2);
+    }
+
+    test_bool(true, ecs_query_next(&it));
+    test_int(2, it.count);
+    test_uint(e1, it.entities[0]);
+    {
+        Position *p = ecs_field_at(&it, Position, 1, 0);
+        test_assert(p != NULL);
+        test_int(p->x, 10); test_int(p->y, 20);
+    }
+
+    test_uint(e2, it.entities[1]);
+    {
+        Position *p = ecs_field_at(&it, Position, 1, 1);
+        test_assert(p != NULL);
+        test_int(p->x, 30); test_int(p->y, 40);
     }
 
     test_bool(false, ecs_query_next(&it));
@@ -1171,6 +1171,150 @@ void Sparse_sparse_0_src(void) {
     test_uint(Foo, ecs_field_id(&it, 1));
     test_bool(false, ecs_field_is_set(&it, 0));
     test_bool(true, ecs_field_is_set(&it, 1));
+    test_bool(false, ecs_query_next(&it));
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Sparse_sparse_pair_first(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_COMPONENT(world, Position);
+    ECS_TAG(world, Tgt);
+
+    ecs_add_id(world, ecs_id(Position), EcsSparse);
+
+    ecs_entity_t e1 = ecs_new(world);
+    ecs_set_pair(world, e1, Position, Tgt, {10, 20});
+
+    ecs_query_t *q = ecs_query(world, {
+        .expr = "(Position, Tgt)",
+        .cache_kind = cache_kind
+    });
+
+    ecs_iter_t it = ecs_query_iter(world, q);
+
+    test_bool(true, ecs_query_next(&it));
+    test_int(1, it.count);
+    test_uint(e1, it.entities[0]);
+    test_uint(ecs_pair_t(Position, Tgt), ecs_field_id(&it, 0));
+    {
+        Position *p = ecs_field_at(&it, Position, 0, 0);
+        test_assert(p != NULL);
+        test_int(p->x, 10);
+        test_int(p->y, 20);
+    }
+
+    test_bool(false, ecs_query_next(&it));
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Sparse_sparse_pair_second(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Rel);
+    ECS_COMPONENT(world, Position);
+
+    ecs_add_id(world, ecs_id(Position), EcsSparse);
+
+    ecs_entity_t e1 = ecs_new(world);
+    ecs_set_pair_second(world, e1, Rel, Position, {10, 20});
+
+    ecs_query_t *q = ecs_query(world, {
+        .expr = "(Rel, Position)",
+        .cache_kind = cache_kind
+    });
+
+    ecs_iter_t it = ecs_query_iter(world, q);
+
+    test_bool(true, ecs_query_next(&it));
+    test_int(1, it.count);
+    test_uint(e1, it.entities[0]);
+    test_uint(ecs_pair(Rel, ecs_id(Position)), ecs_field_id(&it, 0));
+    {
+        Position *p = ecs_field_at(&it, Position, 0, 0);
+        test_assert(p != NULL);
+        test_int(p->x, 10);
+        test_int(p->y, 20);
+    }
+
+    test_bool(false, ecs_query_next(&it));
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Sparse_sparse_pair_first_after_query(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_COMPONENT(world, Position);
+    ECS_TAG(world, Tgt);
+
+    ecs_add_id(world, ecs_id(Position), EcsSparse);
+
+    ecs_query_t *q = ecs_query(world, {
+        .expr = "(Position, Tgt)",
+        .cache_kind = cache_kind
+    });
+
+    ecs_entity_t e1 = ecs_new(world);
+    ecs_set_pair(world, e1, Position, Tgt, {10, 20});
+
+    ecs_iter_t it = ecs_query_iter(world, q);
+
+    test_bool(true, ecs_query_next(&it));
+    test_int(1, it.count);
+    test_uint(e1, it.entities[0]);
+    test_uint(ecs_pair_t(Position, Tgt), ecs_field_id(&it, 0));
+    {
+        Position *p = ecs_field_at(&it, Position, 0, 0);
+        test_assert(p != NULL);
+        test_int(p->x, 10);
+        test_int(p->y, 20);
+    }
+
+    test_bool(false, ecs_query_next(&it));
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Sparse_sparse_pair_second_after_query(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Rel);
+    ECS_COMPONENT(world, Position);
+
+    ecs_add_id(world, ecs_id(Position), EcsSparse);
+
+    ecs_query_t *q = ecs_query(world, {
+        .expr = "(Rel, Position)",
+        .cache_kind = cache_kind
+    });
+
+    ecs_entity_t e1 = ecs_new(world);
+    ecs_set_pair_second(world, e1, Rel, Position, {10, 20});
+
+    ecs_iter_t it = ecs_query_iter(world, q);
+
+    test_bool(true, ecs_query_next(&it));
+    test_int(1, it.count);
+    test_uint(e1, it.entities[0]);
+    test_uint(ecs_pair(Rel, ecs_id(Position)), ecs_field_id(&it, 0));
+    {
+        Position *p = ecs_field_at(&it, Position, 0, 0);
+        test_assert(p != NULL);
+        test_int(p->x, 10);
+        test_int(p->y, 20);
+    }
+
     test_bool(false, ecs_query_next(&it));
 
     ecs_query_fini(q);

@@ -45,6 +45,7 @@ struct ecs_observable_t {
     ecs_event_record_t on_set;
     ecs_event_record_t on_wildcard;
     ecs_sparse_t events;  /* sparse<event, ecs_event_record_t> */
+    uint64_t last_observer_id;
 };
 
 /** Range in table */
@@ -70,8 +71,9 @@ struct ecs_ref_t {
     ecs_entity_t entity;    /* Entity */
     ecs_entity_t id;        /* Component id */
     uint64_t table_id;      /* Table id for detecting ABA issues */
-    struct ecs_table_record_t *tr; /* Table record for component */
+    uint32_t table_version; /* Table version for detecting changes */
     ecs_record_t *record;   /* Entity index record */
+    void *ptr;              /* Cached component pointer */
 };
 
 
@@ -91,7 +93,8 @@ typedef struct ecs_worker_iter_t {
 /* Convenience struct to iterate table array for id */
 typedef struct ecs_table_cache_iter_t {
     struct ecs_table_cache_hdr_t *cur, *next;
-    struct ecs_table_cache_hdr_t *next_list;
+    bool iter_fill;
+    bool iter_empty;
 } ecs_table_cache_iter_t;
 
 /** Each iterator */
