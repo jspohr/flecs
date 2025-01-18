@@ -76,7 +76,7 @@ namespace _ {
         #if _MSC_VER >= 1929
             #define ECS_SIZE_T_STR "unsigned __int64"
         #else
-            #define ECS_SIZE_T_STR "unsigned int"
+            #define ECS_SIZE_T_STR "unsigned __int64"
         #endif 
     #elif defined(__clang__)
         #define ECS_SIZE_T_STR "size_t"
@@ -90,7 +90,7 @@ namespace _ {
 #else
     #ifdef ECS_TARGET_MSVC
         #if _MSC_VER >= 1929
-            #define ECS_SIZE_T_STR "unsigned __int32"
+            #define ECS_SIZE_T_STR "unsigned int"
         #else
             #define ECS_SIZE_T_STR "unsigned int"
         #endif 
