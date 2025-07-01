@@ -1854,8 +1854,8 @@ void SerializeIterToJson_serialize_paged_iterator_w_vars(void) {
     ecs_iter_t it = ecs_query_iter(world, r);
     ecs_iter_t pit = ecs_page_iter(&it, 1, 3);
 
-    test_assert(var < pit.variable_count);
-    test_json("Var", pit.variable_names[var]);
+    test_assert(var < ecs_iter_get_var_count(&pit));
+    test_json("Var", ecs_iter_get_var_name(&pit, var));
 
     test_bool(true, ecs_page_next(&pit));
     test_int(2, pit.count);
@@ -2302,6 +2302,36 @@ void SerializeIterToJson_serialize_var_labels_for_query(void) {
 }
 
 void SerializeIterToJson_serialize_null_doc_name(void) {
+    ecs_world_t *world = ecs_init();
+
+    ECS_TAG(world, Tag);
+
+    ecs_entity_t e = ecs_entity(world, { .name = "foo" });
+    ecs_set_pair(world, e, EcsDocDescription, EcsName, { NULL });
+    ecs_add(world, e, Tag);
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms[0] = {
+            .id = Tag
+        }
+    });
+    test_assert(q != NULL);
+
+    ecs_iter_to_json_desc_t desc = ECS_ITER_TO_JSON_INIT;
+    desc.serialize_doc = true;
+
+    ecs_iter_t it = ecs_query_iter(world, q);
+    char *json = ecs_iter_to_json(&it, &desc);
+    test_assert(json != NULL);
+    test_json(json, "{\"results\":[{\"name\":\"foo\", \"doc\":{\"label\":null}, \"fields\":{}}]}");
+    ecs_os_free(json);
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void SerializeIterToJson_serialize_overwrite_null_doc_name(void) {
     ecs_world_t *world = ecs_init();
 
     ECS_TAG(world, Tag);

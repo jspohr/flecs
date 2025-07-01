@@ -108,6 +108,8 @@ void Pipeline_pipeline_init_no_system_term(void);
 void Pipeline_disable_component_from_immediate_system(void);
 void Pipeline_run_w_empty_query(void);
 void Pipeline_run_w_0_src_query(void);
+void Pipeline_inout_none_after_write(void);
+void Pipeline_empty_pipeline_after_disable_phase(void);
 
 // Testsuite 'SystemMisc'
 void SystemMisc_invalid_not_without_id(void);
@@ -394,10 +396,7 @@ void MultiThreadStaging_4_threads_add_to_current(void);
 void MultiThreadStaging_5_threads_add_to_current(void);
 void MultiThreadStaging_6_threads_add_to_current(void);
 void MultiThreadStaging_2_threads_on_add(void);
-void MultiThreadStaging_new_w_count(void);
 void MultiThreadStaging_custom_thread_auto_merge(void);
-void MultiThreadStaging_set_pair_w_new_target_readonly(void);
-void MultiThreadStaging_set_pair_w_new_target_tgt_component_readonly(void);
 void MultiThreadStaging_set_pair_w_new_target_defer(void);
 void MultiThreadStaging_set_pair_w_new_target_tgt_component_defer(void);
 
@@ -463,6 +462,7 @@ void Rest_import_rest_after_mini(void);
 void Rest_get_pipeline_stats_after_delete_system(void);
 void Rest_request_world_summary_before_monitor_sys_run(void);
 void Rest_escape_backslash(void);
+void Rest_request_small_buffer_plus_one(void);
 
 // Testsuite 'Metrics'
 void Metrics_member_gauge_1_entity(void);
@@ -932,6 +932,14 @@ bake_test_case Pipeline_testcases[] = {
     {
         "run_w_0_src_query",
         Pipeline_run_w_0_src_query
+    },
+    {
+        "inout_none_after_write",
+        Pipeline_inout_none_after_write
+    },
+    {
+        "empty_pipeline_after_disable_phase",
+        Pipeline_empty_pipeline_after_disable_phase
     }
 };
 
@@ -1988,20 +1996,8 @@ bake_test_case MultiThreadStaging_testcases[] = {
         MultiThreadStaging_2_threads_on_add
     },
     {
-        "new_w_count",
-        MultiThreadStaging_new_w_count
-    },
-    {
         "custom_thread_auto_merge",
         MultiThreadStaging_custom_thread_auto_merge
-    },
-    {
-        "set_pair_w_new_target_readonly",
-        MultiThreadStaging_set_pair_w_new_target_readonly
-    },
-    {
-        "set_pair_w_new_target_tgt_component_readonly",
-        MultiThreadStaging_set_pair_w_new_target_tgt_component_readonly
     },
     {
         "set_pair_w_new_target_defer",
@@ -2238,6 +2234,10 @@ bake_test_case Rest_testcases[] = {
     {
         "escape_backslash",
         Rest_escape_backslash
+    },
+    {
+        "request_small_buffer_plus_one",
+        Rest_request_small_buffer_plus_one
     }
 };
 
@@ -2560,7 +2560,7 @@ static bake_test_suite suites[] = {
         "Pipeline",
         NULL,
         NULL,
-        85,
+        87,
         Pipeline_testcases
     },
     {
@@ -2660,7 +2660,7 @@ static bake_test_suite suites[] = {
         "MultiThreadStaging",
         MultiThreadStaging_setup,
         NULL,
-        12,
+        9,
         MultiThreadStaging_testcases,
         1,
         MultiThreadStaging_params
@@ -2690,7 +2690,7 @@ static bake_test_suite suites[] = {
         "Rest",
         NULL,
         NULL,
-        20,
+        21,
         Rest_testcases
     },
     {

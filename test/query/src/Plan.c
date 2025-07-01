@@ -424,7 +424,7 @@ void Plan_3_trivial_plan_w_any(void) {
     const char *expect = 
     HEAD " 0. [-1,  1]  setids      " 
     LINE " 1. [ 0,  2]  triv        {0,1}"
-    LINE " 2. [ 1,  3]  andany      $[this]           (ChildOf, $_'1)"
+    LINE " 2. [ 1,  3]  and_any     $[this]           (ChildOf, $_'1)"
     LINE " 3. [ 2,  4]  yield       "
     LINE "";
     char *plan = ecs_query_plan(r);
@@ -519,7 +519,7 @@ void Plan_3_trivial_plan_w_any_component(void) {
     const char *expect = 
     HEAD " 0. [-1,  1]  setids      " 
     LINE " 1. [ 0,  2]  triv        {0,1}"
-    LINE " 2. [ 1,  3]  andany      $[this]           (ChildOf, $_'1)"
+    LINE " 2. [ 1,  3]  and_any     $[this]           (ChildOf, $_'1)"
     LINE " 3. [ 2,  4]  yield       "
     LINE "";
     char *plan = ecs_query_plan(r);
@@ -1987,10 +1987,7 @@ void Plan_cache_2_or(void) {
 
     ecs_log_enable_colors(false);
 
-    const char *expect = 
-    HEAD " 0. [-1,  1]  xcache      "
-    LINE " 1. [ 0,  2]  yield       "
-    LINE "";
+    const char *expect = NULL;
     char *plan = ecs_query_plan(r);
 
     test_str(expect, plan);
@@ -2022,10 +2019,7 @@ void Plan_cache_2_or_w_not(void) {
 
     ecs_log_enable_colors(false);
 
-    const char *expect = 
-    HEAD " 0. [-1,  1]  xcache      "
-    LINE " 1. [ 0,  2]  yield       "
-    LINE "";
+    const char *expect = NULL;
     char *plan = ecs_query_plan(r);
 
     test_str(expect, plan);
@@ -2139,7 +2133,7 @@ void Plan_pair_first_wildcard(void) {
     ecs_log_enable_colors(false);
 
     const char *expect = 
-    HEAD " 0. [-1,  1]  and         $[this]           ($*'1, Tgt)"
+    HEAD " 0. [-1,  1]  and_wct     $[this]           ($*'1, Tgt)"
     LINE " 1. [ 0,  2]  yield       "
     LINE "";
     char *plan = ecs_query_plan(r);
@@ -2166,7 +2160,7 @@ void Plan_pair_first_wildcard_cached(void) {
     ecs_log_enable_colors(false);
 
     const char *expect = 
-    HEAD " 0. [-1,  1]  xcache      "
+    HEAD " 0. [-1,  1]  and_wct     $[this]           ($*'1, Tgt)"
     LINE " 1. [ 0,  2]  yield       "
     LINE "";    
     char *plan = ecs_query_plan(r);
@@ -2219,10 +2213,7 @@ void Plan_pair_second_wildcard_cached(void) {
 
     ecs_log_enable_colors(false);
 
-    const char *expect = 
-    HEAD " 0. [-1,  1]  xcache      "
-    LINE " 1. [ 0,  2]  yield       "
-    LINE "";
+    const char *expect = NULL;
     char *plan = ecs_query_plan(r);
 
     test_str(expect, plan);
@@ -2349,36 +2340,6 @@ void Plan_0_src_w_toggle(void) {
     ecs_fini(world);
 }
 
-void Plan_0_src_w_union(void) {
-    ecs_world_t *world = ecs_mini();
-
-    ECS_TAG(world, Movement);
-
-    ecs_add_id(world, ecs_id(Movement), EcsUnion);
-
-    ecs_query_t *q = ecs_query(world, {
-        .expr = "Movement(#0, *)"
-    });
-
-    test_assert(q != NULL);
-
-    ecs_log_enable_colors(false);
-
-    const char *expect = 
-    HEAD " 0. [-1,  1]  setfix      "
-    LINE " 1. [ 0,  2]  setids      "
-    LINE " 2. [ 1,  3]  yield       "
-    LINE "";
-    char *plan = ecs_query_plan(q);
-
-    test_str(expect, plan);
-    ecs_os_free(plan);
-
-    ecs_query_fini(q);
-
-    ecs_fini(world);
-}
-
 void Plan_0_src_w_sparse_and_component(void) {
     ecs_world_t *world = ecs_mini();
 
@@ -2443,38 +2404,6 @@ void Plan_0_src_w_toggle_and_component(void) {
     ecs_fini(world); 
 }
 
-void Plan_0_src_w_union_and_component(void) {
-    ecs_world_t *world = ecs_mini();
-
-    ECS_TAG(world, Movement);
-    ECS_COMPONENT(world, Velocity);
-
-    ecs_add_id(world, ecs_id(Movement), EcsUnion);
-
-    ecs_query_t *q = ecs_query(world, {
-        .expr = "Movement(#0, *), Velocity"
-    });
-
-    test_assert(q != NULL);
-
-    ecs_log_enable_colors(false);
-
-    const char *expect = 
-    HEAD " 0. [-1,  1]  setfix      "
-    LINE " 1. [ 0,  2]  setids      "
-    LINE " 2. [ 1,  3]  and         $[this]           (Velocity)"
-    LINE " 3. [ 2,  4]  yield       "
-    LINE "";
-    char *plan = ecs_query_plan(q);
-
-    test_str(expect, plan);
-    ecs_os_free(plan);
-
-    ecs_query_fini(q);
-
-    ecs_fini(world);
-}
-
 void Plan_cached_isa_tgt(void) {
     ecs_world_t *world = ecs_mini();
 
@@ -2517,10 +2446,7 @@ void Plan_cached_isa_tgt_w_self_second(void) {
 
     ecs_log_enable_colors(false);
 
-    const char *expect = 
-    HEAD " 0. [-1,  1]  xcache      "
-    LINE " 1. [ 0,  2]  yield       "
-    LINE "";
+    const char *expect = NULL;
     char *plan = ecs_query_plan(q);
 
     test_str(expect, plan);
@@ -2573,10 +2499,7 @@ void Plan_cached_isa_tgt_w_self_second_no_expr(void) {
 
     ecs_log_enable_colors(false);
 
-    const char *expect = 
-    HEAD " 0. [-1,  1]  xcache      "
-    LINE " 1. [ 0,  2]  yield       "
-    LINE "";
+    const char *expect = NULL;
     char *plan = ecs_query_plan(q);
 
     test_str(expect, plan);
@@ -2684,6 +2607,210 @@ void Plan_cached_w_not_optional_and_uncacheable(void) {
 
     test_str(expect, plan);
     ecs_os_free(plan);
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Plan_cached_w_not(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Foo);
+    ECS_TAG(world, Bar);
+
+    ecs_query_t *q = ecs_query(world, {
+        .expr = "Foo, !Bar",
+        .cache_kind = EcsQueryCacheAuto
+    });
+
+    test_assert(q != NULL);
+
+    ecs_log_enable_colors(false);
+
+    char *plan = ecs_query_plan(q);
+
+    test_str(NULL, plan);
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Plan_cached_w_not_wildcard(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Foo);
+    ECS_TAG(world, Bar);
+
+    ecs_query_t *q = ecs_query(world, {
+        .expr = "Foo, !(Bar, *)",
+        .cache_kind = EcsQueryCacheAuto
+    });
+
+    test_assert(q != NULL);
+
+    ecs_log_enable_colors(false);
+
+    char *plan = ecs_query_plan(q);
+
+    test_str(NULL, plan);
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Plan_cached_w_not_simple(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Foo);
+    ECS_TAG(world, Bar);
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms = {
+            { Foo },
+            { Bar, .oper = EcsNot }
+        },
+        .cache_kind = EcsQueryCacheAuto
+    });
+
+    test_assert(q != NULL);
+
+    ecs_log_enable_colors(false);
+
+    char *plan = ecs_query_plan(q);
+
+    test_str(NULL, plan);
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Plan_cached_w_not_wildcard_simple(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Foo);
+    ECS_TAG(world, Bar);
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms = {
+            { Foo },
+            { ecs_pair(Bar, EcsWildcard), .oper = EcsNot }
+        },
+        .cache_kind = EcsQueryCacheAuto
+    });
+
+    test_assert(q != NULL);
+
+    ecs_log_enable_colors(false);
+
+    char *plan = ecs_query_plan(q);
+
+    test_str(NULL, plan);
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Plan_cached_w_optional(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Foo);
+    ECS_TAG(world, Bar);
+
+    ecs_query_t *q = ecs_query(world, {
+        .expr = "Foo, ?Bar",
+        .cache_kind = EcsQueryCacheAuto
+    });
+
+    test_assert(q != NULL);
+
+    ecs_log_enable_colors(false);
+
+    char *plan = ecs_query_plan(q);
+
+    test_str(NULL, plan);
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Plan_cached_w_optional_wildcard(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Foo);
+    ECS_TAG(world, Bar);
+
+    ecs_query_t *q = ecs_query(world, {
+        .expr = "Foo, ?(Bar, *)",
+        .cache_kind = EcsQueryCacheAuto
+    });
+
+    test_assert(q != NULL);
+
+    ecs_log_enable_colors(false);
+
+    char *plan = ecs_query_plan(q);
+
+    test_str(NULL, plan);
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Plan_cached_w_optional_simple(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Foo);
+    ECS_TAG(world, Bar);
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms = {
+            { Foo },
+            { Bar, .oper = EcsOptional }
+        },
+        .cache_kind = EcsQueryCacheAuto
+    });
+
+    test_assert(q != NULL);
+
+    ecs_log_enable_colors(false);
+
+    char *plan = ecs_query_plan(q);
+
+    test_str(NULL, plan);
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Plan_cached_w_optional_wildcard_simple(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Foo);
+    ECS_TAG(world, Bar);
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms = {
+            { Foo },
+            { ecs_pair(Bar, EcsWildcard), .oper = EcsOptional }
+        },
+        .cache_kind = EcsQueryCacheAuto
+    });
+
+    test_assert(q != NULL);
+
+    ecs_log_enable_colors(false);
+
+    char *plan = ecs_query_plan(q);
+
+    test_str(NULL, plan);
 
     ecs_query_fini(q);
 

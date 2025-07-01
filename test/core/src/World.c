@@ -1134,7 +1134,25 @@ void World_delete_empty_tables_after_mini(void) {
     ecs_world_t *world = ecs_mini();
 
     const ecs_world_info_t *info = ecs_get_world_info(world);
-    int32_t empty_table_count = info->table_count;
+    int32_t old_table_count = info->table_count;
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms = {{ .id = EcsAny }},
+        .flags = EcsQueryMatchEmptyTables
+    });
+    test_assert(q != NULL);
+
+    ecs_iter_t it = ecs_query_iter(world, q);
+    int32_t empty_table_count = 0;
+    while (ecs_query_next(&it)) {
+        if (!ecs_table_count(it.table)) {
+            empty_table_count ++;
+        }
+    }
+
+    ecs_query_fini(q);
+
+    empty_table_count --; // correct for root table
 
     int32_t deleted;
     deleted = ecs_delete_empty_tables(world, 
@@ -1143,14 +1161,32 @@ void World_delete_empty_tables_after_mini(void) {
 
     deleted = ecs_delete_empty_tables(world, 
         &(ecs_delete_empty_tables_desc_t){ .delete_generation = 1}); /* Delete */
-    test_assert(deleted != 0);
-    test_int(info->table_count + deleted, empty_table_count);
+    test_assert(deleted == empty_table_count);
+    test_int(info->table_count + deleted, old_table_count);
 
     ecs_fini(world);
 }
 
 void World_delete_empty_tables_after_init(void) {
     ecs_world_t *world = ecs_init();
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms = {{ .id = EcsAny }},
+        .flags = EcsQueryMatchEmptyTables
+    });
+    test_assert(q != NULL);
+
+    ecs_iter_t it = ecs_query_iter(world, q);
+    int32_t empty_table_count = 0;
+    while (ecs_query_next(&it)) {
+        if (!ecs_table_count(it.table)) {
+            empty_table_count ++;
+        }
+    }
+
+    ecs_query_fini(q);
+
+    empty_table_count --; // correct for root table
 
     int32_t deleted;
     deleted = ecs_delete_empty_tables(world, 
@@ -1159,7 +1195,7 @@ void World_delete_empty_tables_after_init(void) {
 
     deleted = ecs_delete_empty_tables(world, 
         &(ecs_delete_empty_tables_desc_t){ .delete_generation = 1 }); /* Delete */
-    test_assert(deleted != 0);
+    test_assert(deleted == empty_table_count);
 
     ecs_fini(world);
 }
@@ -1178,8 +1214,9 @@ void World_delete_1000_empty_tables(void) {
         ecs_add_id(world, e, ecs_new(world));
     }
 
-    ecs_run_aperiodic(world, 0);
     test_int(info->table_count, old_table_count + 1000 + 1);
+
+    ecs_delete(world, e);
 
     int32_t deleted;
     deleted = ecs_delete_empty_tables(world, 
@@ -1192,42 +1229,6 @@ void World_delete_1000_empty_tables(void) {
     test_assert(deleted >= 1000);
 
     test_assert(info->table_count <= old_table_count);
-
-    ecs_fini(world);
-}
-
-void World_delete_empty_tables_for_id(void) {
-    ecs_world_t *world = ecs_mini();
-
-    ECS_TAG(world, TagA);
-    ECS_TAG(world, TagB);
-    ecs_run_aperiodic(world, 0);
-
-    const ecs_world_info_t *info = ecs_get_world_info(world);
-    int32_t old_table_count = info->table_count;
-
-    ecs_entity_t e1 = ecs_new_w(world, TagA);
-    for (int i = 0; i < 500; i ++) {
-        ecs_add_id(world, e1, ecs_new(world));
-    }
-
-    ecs_entity_t e2 = ecs_new_w(world, TagB);
-    for (int i = 0; i < 500; i ++) {
-        ecs_add_id(world, e2, ecs_new(world));
-    }
-
-    test_int(info->table_count, old_table_count + 1000 + 2);
-
-    int32_t deleted;
-    deleted = ecs_delete_empty_tables(world, 
-        &(ecs_delete_empty_tables_desc_t){ .id = TagA, .delete_generation = 1 });
-    test_int(deleted, 0);
-
-    deleted = ecs_delete_empty_tables(world, 
-        &(ecs_delete_empty_tables_desc_t){ .id = TagA, .delete_generation = 1 });
-    test_assert(deleted != 0);
-    test_assert(deleted >= 500);
-    test_assert(deleted < 1000);
 
     ecs_fini(world);
 }
@@ -1810,4 +1811,241 @@ void World_world_init_fini_log_all(void) {
     ecs_fini(world);
 
     test_assert(true);
+}
+
+void World_mini_shrink_fini(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ecs_shrink(world);
+
+    ecs_fini(world);
+
+    test_assert(true);
+}
+
+void World_init_shrink_fini(void) {
+    ecs_world_t *world = ecs_init();
+
+    ecs_shrink(world);
+
+    ecs_fini(world);
+
+    test_assert(true);
+}
+
+void World_init_shrink_twice_fini(void) {
+    ecs_world_t *world = ecs_init();
+
+    ecs_shrink(world);
+    ecs_shrink(world);
+
+    ecs_fini(world);
+
+    test_assert(true);
+}
+
+void World_init_create_delete_entities_shrink_fini(void) {
+    ecs_world_t *world = ecs_init();
+
+    ECS_COMPONENT(world, Position);
+    ECS_COMPONENT(world, Velocity);
+
+    int Tags = 100, Rows = 200;
+
+    ecs_entity_t *tags = ecs_os_malloc_n(ecs_entity_t, Tags);
+    for (int t = 0; t < Tags; t ++) {
+        tags[t] = ecs_new(world);
+    }
+
+    ecs_entity_t *entities = ecs_os_malloc_n(ecs_entity_t, Rows * Tags);
+    int32_t index = 0;
+    for (int t = 0; t < Tags; t ++) {
+        ecs_entity_t tag = tags[t];
+        for (int e = 0; e < Rows; e ++) {
+            entities[index] = ecs_new(world);
+            ecs_add(world, entities[index], Position);
+            ecs_add(world, entities[index], Velocity);
+            ecs_add_id(world, entities[index], tag);
+            index ++;
+        }
+    }
+
+    ecs_shrink(world);
+
+    index = 0;
+
+    for (int t = 0; t < Tags; t ++) {
+        ecs_entity_t tag = tags[t];
+        for (int e = 0; e < Rows; e ++) {
+            test_assert(ecs_is_alive(world, entities[index]));
+            test_assert(ecs_has(world, entities[index], Position));
+            test_assert(ecs_has(world, entities[index], Velocity));
+            test_assert(ecs_has_id(world, entities[index], tag));
+            index ++;
+        }
+    }
+
+    for (int e = 0; e < Tags * Rows; e ++) {
+        ecs_delete(world, entities[e]);
+    }
+
+    ecs_shrink(world);
+
+    for (int e = 0; e < Tags * Rows; e ++) {
+        test_assert(!ecs_is_alive(world, entities[e]));
+    }
+
+    ecs_os_free(tags);
+    ecs_os_free(entities);
+
+    ecs_fini(world);
+}
+
+void World_init_create_delete_random_1_entities_shrink_fini(void) {
+    ecs_world_t *world = ecs_init();
+
+    ECS_COMPONENT(world, Position);
+    ECS_COMPONENT(world, Velocity);
+
+    int Tags = 100, Rows = 200, DONT_DELETE = 4;
+
+    ecs_entity_t *tags = ecs_os_malloc_n(ecs_entity_t, Tags);
+    for (int t = 0; t < Tags; t ++) {
+        tags[t] = ecs_new(world);
+    }
+
+    ecs_entity_t *entities = ecs_os_malloc_n(ecs_entity_t, Rows * Tags);
+    int32_t index = 0;
+    for (int t = 0; t < Tags; t ++) {
+        ecs_entity_t tag = tags[t];
+        for (int e = 0; e < Rows; e ++) {
+            entities[index] = ecs_new(world);
+            ecs_add(world, entities[index], Position);
+            ecs_add(world, entities[index], Velocity);
+            ecs_add_id(world, entities[index], tag);
+            index ++;
+        }
+    }
+
+    ecs_shrink(world);
+
+    index = 0;
+
+    for (int t = 0; t < Tags; t ++) {
+        ecs_entity_t tag = tags[t];
+        for (int e = 0; e < Rows; e ++) {
+            test_assert(ecs_is_alive(world, entities[index]));
+            test_assert(ecs_has(world, entities[index], Position));
+            test_assert(ecs_has(world, entities[index], Velocity));
+            test_assert(ecs_has_id(world, entities[index], tag));
+            index ++;
+        }
+    }
+
+    ecs_entity_t *dont_delete = ecs_os_malloc_n(ecs_entity_t, DONT_DELETE);
+    for (int e = 0; e < DONT_DELETE; e ++) {
+        int32_t index;
+        do {
+            index = rand() % (Rows * Tags);
+        } while(!entities[index]);
+
+        dont_delete[e] = entities[index];
+        entities[index] = 0;
+    }
+
+    for (int e = 0; e < Tags * Rows; e ++) {
+        if (entities[e]) {
+            ecs_delete(world, entities[e]);
+        }
+    }
+
+    ecs_shrink(world);
+
+    for (int e = 0; e < Tags * Rows; e ++) {
+        if (entities[e]) {
+            test_assert(!ecs_is_alive(world, entities[e]));
+        }
+    }
+
+    for (int e = 0; e < DONT_DELETE; e ++) {
+        test_assert(ecs_is_alive(world, dont_delete[e]));
+    }
+
+    ecs_os_free(tags);
+    ecs_os_free(entities);
+    ecs_os_free(dont_delete);
+
+    ecs_fini(world);
+}
+
+void World_init_create_delete_random_2_entities_shrink_fini(void) {
+    ecs_world_t *world = ecs_init();
+
+    ECS_COMPONENT(world, Position);
+    ECS_COMPONENT(world, Velocity);
+
+    int Tags = 100, Rows = 200, Delete = 4;
+
+    ecs_entity_t *tags = ecs_os_malloc_n(ecs_entity_t, Tags);
+    for (int t = 0; t < Tags; t ++) {
+        tags[t] = ecs_new(world);
+    }
+
+    ecs_entity_t *entities = ecs_os_malloc_n(ecs_entity_t, Rows * Tags);
+    int32_t index = 0;
+    for (int t = 0; t < Tags; t ++) {
+        ecs_entity_t tag = tags[t];
+        for (int e = 0; e < Rows; e ++) {
+            entities[index] = ecs_new(world);
+            ecs_add(world, entities[index], Position);
+            ecs_add(world, entities[index], Velocity);
+            ecs_add_id(world, entities[index], tag);
+            index ++;
+        }
+    }
+
+    ecs_shrink(world);
+
+    index = 0;
+
+    for (int t = 0; t < Tags; t ++) {
+        ecs_entity_t tag = tags[t];
+        for (int e = 0; e < Rows; e ++) {
+            test_assert(ecs_is_alive(world, entities[index]));
+            test_assert(ecs_has(world, entities[index], Position));
+            test_assert(ecs_has(world, entities[index], Velocity));
+            test_assert(ecs_has_id(world, entities[index], tag));
+            index ++;
+        }
+    }
+
+    ecs_entity_t *delete = ecs_os_malloc_n(ecs_entity_t, Delete);
+    for (int e = 0; e < Delete; e ++) {
+        int32_t index;
+        do {
+            index = rand() % (Rows * Tags);
+        } while(!entities[index]);
+
+        delete[e] = entities[index];
+        entities[index] = 0;
+        ecs_delete(world, delete[e]);
+    }
+
+    ecs_shrink(world);
+
+    for (int e = 0; e < Tags * Rows; e ++) {
+        if (entities[e]) {
+            test_assert(ecs_is_alive(world, entities[e]));
+        }
+    }
+
+    for (int e = 0; e < Delete; e ++) {
+        test_assert(!ecs_is_alive(world, delete[e]));
+    }
+
+    ecs_os_free(tags);
+    ecs_os_free(entities);
+    ecs_os_free(delete);
+
+    ecs_fini(world);
 }

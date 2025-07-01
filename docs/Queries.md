@@ -2332,15 +2332,11 @@ while (ecs_query_next(&it)) {
   SimTime *st = ecs_field(&it, SimTime, 2);
   
   for (int i = 0; i < it.count; i ++) {
-    p[i].x += v[i].x * st[i].value;
-    p[i].y += v[i].y * st[i].value;
+    p[i].x += v[i].x * st->value;
+    p[i].y += v[i].y * st->value;
   }
 }
 ```
-
-Note how in this example all components can be accessed as arrays. When a query has mixed fields (fields with both arrays and single values), behavior defaults to entity-based iteration where entities are returned one at a time. As a result, `i` in the previous example will never be larger than `0`, which is why this code works even though there is only a single instance of the `SimTime` component.
-
-Returning entities one at a time can negatively affect performance, especially for large tables. To learn more about why this behavior exists and how to ensure that mixed results use table-based iteration, see [Instancing](#instancing). 
 
 A source may also be specified by name by setting the `src.name` member:
 
@@ -2401,18 +2397,14 @@ q.run([](flecs::iter& it) {
     auto st = it.field<SimTime>(2);
     
     for (auto i : it) {
-      p[i].x += v[i].x * st[i].value;
-      p[i].y += v[i].y * st[i].value;
+      p[i].x += v[i].x * st->value;
+      p[i].y += v[i].y * st->value;
     }
   }
 });
 ```
 
-Note how in this example all components can be accessed as arrays. When a query has mixed fields (fields with both arrays and single values), behavior defaults to entity-based iteration where entities are returned one at a time. As a result, `i` in the previous example will never be larger than `0`, which is why this code works even though there is only a single instance of the `SimTime` component.
-
-Returning entities one at a time can negatively affect performance, especially for large tables. To learn more about why this behavior exists and how to ensure that mixed results use table-based iteration, see [Instancing](#instancing). 
-
-The next example shows how queries with mixed `$this` and fixed sources can be iterated with `each`. The `each` function does not have the performance drawback of the last `run` example, as it uses [instancing](#instancing) by default.
+Note that since `SimTime` is matched on a single entity, it is accessed as a pointer, not an array. The next example shows how queries with mixed `$this` and fixed sources can be iterated with `each`:
 
 ```cpp
 flecs::query<Position, Velocity, SimTime> q = 
@@ -2427,7 +2419,9 @@ q.each([](flecs::entity e, Position& p, Velocity& v, SimTime& st) {
 });
 ```
 
-When a query has no terms for the `$this` source, it must be iterated with the `run` function or with a variant of `each` that does not have a signature with `flecs::entity` as first argument:
+Note how `each` abstracts away the difference between components matched on the (default) `$this` source and components matched on a single entity.
+
+When a query has no terms for the (default) `$this` source, it must be iterated with the `run` function or with a variant of `each` that does not have a signature with `flecs::entity` as first argument:
 
 ```cpp
 flecs::query<SimConfig, SimTime> q = 
@@ -2491,18 +2485,14 @@ q.run(|mut it| {
         let v = it.field::<Velocity>(1).unwrap();
         let st = it.field::<SimTime>(2).unwrap();
         for i in it.iter() {
-            p[i].x += v[i].x * st[i].value;
-            p[i].y += v[i].y * st[i].value;
+            p[i].x += v[i].x * st.value;
+            p[i].y += v[i].y * st.value;
         }
     }
 });
 ```
 
-Note how in this example all components can be accessed as arrays. When a query has mixed fields (fields with both arrays and single values), behavior defaults to entity-based iteration where entities are returned one at a time. As a result, `i` in the previous example will never be larger than `0`, which is why this code works even though there is only a single instance of the `SimTime` component.
-
-Returning entities one at a time can negatively affect performance, especially for large tables. To learn more about why this behavior exists and how to ensure that mixed results use table-based iteration, see [Instancing](#instancing). 
-
-The next example shows how queries with mixed `$this` and fixed sources can be iterated with `each`. The `each` function does not have the performance drawback of the last `run` example, as it uses [instancing](#instancing) by default.
+The next example shows how queries with mixed `$this` and fixed sources can be iterated with `each`:
 
 ```rust
 let q = world
@@ -2518,7 +2508,9 @@ q.each_entity(|e, (p, v, st)| {
 });
 ```
 
-When a query has no terms for the `$this` source, it must be iterated with the `run` function or with a variant of `each` that does not have a signature with `flecs::entity` as first argument:
+Note how `each` abstracts away the difference between components matched on the (default) `$this` source and components matched on a single entity.
+
+When a query has no terms for the (default) `$this` source, it must be iterated with the `run` function or with a variant of `each` that does not have a signature with `flecs::entity` as first argument:
 
 ```rust
 let q = world
@@ -2921,21 +2913,11 @@ let q = world
 
 When a component is matched through traversal and its [access modifier](#access-modifiers) is not explicitly set, it defaults to `flecs::In`. This behavior is consistent with terms that have a fixed [source](#source).
 
-#### Iteration
-When a component is matched through traversal, the behavior is the same as though the component was matched through a fixed [source](#source): iteration will switch from table-based to entity-based. This happens on a per-result basis: if all terms are matched on the matched entity the entire table will be returned by the iterator. If one of the terms was matched through traversal, entities are returned one by one.
-
-While returning entities one by one is measurably slower than iterating entire tables, this default behavior enables matching inherited components by default without requiring the user code to be explicitly aware of the difference between a regular component and an inherited component. An advantage of this approach is that applications that use inherited components can interoperate with third party systems that do not explicitly handle them.
-
-To ensure fast table-based iteration an application can enable [instancing](#instancing). Instanced iteration is as fast as, and often faster than regular iteration. Using inherited components that are shared across many entities can improve cache efficiency as less data needs to be loaded from main RAM, and values are more likely to already be stored in the cache.
-
-> Note: the C++ `each` API always uses [instancing](#instancing), which guarantees fast table-based iteration.
-
 #### Limitations
 This list is an overview of current relationship traversal limitations:
 
 - The `Cascade` and `Desc` flags require caching.
 - Traversal flags can only be specified for the term source.
-- Union relationship queries that are not wildcards are not supported for traversal.
 
 The following sections show how to use traversal in the different language bindings.
 
@@ -3183,15 +3165,6 @@ Serializable($Component), $Component($this)
 
 This query returns serializable components for all entities that have at least one.
 
-#### Setting Variables
-By default variables are assigned while the query is being iterated, but variables can be set before query iteration to constrain the results of a query. Consider the previous example:
-
-```
-SpaceShip($this), DockedTo($this, $Location)
-```
-
-An application can set the `$this` variable or `$Location` variables, or both, before starting iteration to constrain the results returned by the query. This makes it possible to reuse a single query for multiple purposes, which provides better performance when compared to creating multiple queries.
-
 #### Lookup variables
 Variables can be used as the starting point of a by-name lookup. This can be useful when matching hierarchies that have a well-defined structure. An example:
 
@@ -3202,7 +3175,16 @@ SpaceShip($this), !Powered($this.cockpit)
 
 This query will look for an child entity named `cockpit` in the scope of the matched entity for `$this`, and use that entity to match with `Powered`. If no entity with the name `cockpit` is found, the term will evaluate to false.
 
-The following sections show how to use queries in the different language bindings.
+#### Setting Variables
+By default variables are assigned while the query is being iterated, but variables can be set before query iteration to constrain the results of a query. Consider the previous example:
+
+```
+SpaceShip($this), DockedTo($this, $Location)
+```
+
+An application can set the `$this` variable or `$Location` variables, or both, before starting iteration to constrain the results returned by the query. This makes it possible to reuse a single query for multiple purposes, which provides better performance when compared to creating multiple queries.
+
+The following sections show how to use query variables in the different language bindings.
 
 <div class="flecs-snippet-tabs">
 <ul>
@@ -3372,7 +3354,7 @@ q.iterable().set_var_expr("$Location", earth).each(|it| {
 </div>
 
 ### Member Value Queries
-Queries can match against the values of component members if they are of the `ecs_entity_t` type, and the component type is described with the reflection framework. Member value queries make it possible to query on values that can change rapidly without requiring structural changes in the ECS. The tradeoff is that other than with the regular, union and toggle storage options there are no acceleration structures to speed up query evaluation, which means that a query has to evaluate each instance of the component.
+Queries can match against the values of component members if they are of the `ecs_entity_t` type, and the component type is described with the reflection framework. Member value queries make it possible to query on values that can change rapidly without requiring structural changes in the ECS. The tradeoff is that other than with the regular, `DontFragment` and `CanToggle` storage options there are no acceleration structures to speed up query evaluation, which means that a query has to evaluate each instance of the component.
 
 The following sections show how to use queries in the different language bindings.
 

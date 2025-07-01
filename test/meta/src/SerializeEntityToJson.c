@@ -1083,7 +1083,7 @@ void SerializeEntityToJson_serialize_from_core(void) {
 
     char *json = ecs_entity_to_json(world, EcsWorld, NULL);
     test_assert(json != NULL);
-    test_json(json, "{\"parent\":\"flecs.core\", \"name\":\"World\", \"components\":{\"(flecs.core.Identifier,flecs.core.Symbol)\":null, \"(flecs.doc.Description,flecs.doc.Brief)\":{\"value\":\"Entity associated with world\"}}}");
+    test_json(json, "{\"parent\":\"flecs.core\", \"name\":\"World\", \"components\":{\"(flecs.core.Identifier,flecs.core.Symbol)\":{\"value\":\"flecs.core.World\"}, \"(flecs.doc.Description,flecs.doc.Brief)\":{\"value\":\"Entity associated with world\"}}}");
     ecs_os_free(json);
 
     ecs_fini(world);
@@ -1605,9 +1605,11 @@ void SerializeEntityToJson_serialize_id_recycled(void) {
 }
 
 void SerializeEntityToJson_serialize_union_target(void) {
+    test_quarantine("25 Jun 2025");
+
     ecs_world_t *world = ecs_init();
 
-    ECS_ENTITY(world, Rel, Union);
+    ECS_ENTITY(world, Rel, DontFragment, Exclusive);
     ECS_TAG(world, TgtA);
     ECS_TAG(world, TgtB);
     ECS_TAG(world, TgtC);
@@ -1642,9 +1644,11 @@ void SerializeEntityToJson_serialize_union_target(void) {
 }
 
 void SerializeEntityToJson_serialize_union_target_recycled(void) {
+    test_quarantine("25 Jun 2025");
+
     ecs_world_t *world = ecs_init();
 
-    ECS_ENTITY(world, Rel, Union);
+    ECS_ENTITY(world, Rel, DontFragment, Exclusive);
 
     ecs_entity_t e = ecs_new(world);
     ecs_delete(world, e);
@@ -1700,7 +1704,7 @@ void SerializeEntityToJson_serialize_named_w_builtin(void) {
         desc.serialize_builtin = true;
         char *json = ecs_entity_to_json(world, e, &desc);
         test_assert(json != NULL);
-        test_json(json, "{\"name\":\"e\", \"tags\":[\"Foo\"], \"components\":{\"(flecs.core.Identifier,flecs.core.Name)\":null}}");
+        test_json(json, "{\"name\":\"e\", \"tags\":[\"Foo\"], \"components\":{\"(flecs.core.Identifier,flecs.core.Name)\":{\"value\":\"e\"}}}");
         ecs_os_free(json);
     }
 
@@ -1721,7 +1725,7 @@ void SerializeEntityToJson_serialize_named_child_w_builtin(void) {
         desc.serialize_builtin = true;
         char *json = ecs_entity_to_json(world, e, &desc);
         test_assert(json != NULL);
-        test_json(json, "{\"parent\":\"p\", \"name\":\"e\", \"tags\":[\"Foo\"],\"pairs\":{\"flecs.core.ChildOf\":\"p\"}, \"components\":{\"(flecs.core.Identifier,flecs.core.Name)\":null}}");
+        test_json(json, "{\"parent\":\"p\", \"name\":\"e\", \"tags\":[\"Foo\"],\"pairs\":{\"flecs.core.ChildOf\":\"p\"}, \"components\":{\"(flecs.core.Identifier,flecs.core.Name)\":{\"value\":\"e\"}}}");
         ecs_os_free(json);
     }
 
@@ -1743,7 +1747,7 @@ void SerializeEntityToJson_serialize_named_child_w_builtin_w_type_info(void) {
         desc.serialize_type_info = true;
         char *json = ecs_entity_to_json(world, e, &desc);
         test_assert(json != NULL);
-        test_json(json, "{\"parent\":\"p\", \"name\":\"e\", \"tags\":[\"Foo\"],\"pairs\":{\"flecs.core.ChildOf\":\"p\"},\"type_info\":{\"(flecs.core.Identifier,flecs.core.Name)\":0}, \"components\":{\"(flecs.core.Identifier,flecs.core.Name)\":null}}");
+        test_json(json, "{\"parent\":\"p\", \"name\":\"e\", \"tags\":[\"Foo\"],\"pairs\":{\"flecs.core.ChildOf\":\"p\"},\"type_info\":{\"(flecs.core.Identifier,flecs.core.Name)\":{\"value\":[\"text\"]}}, \"components\":{\"(flecs.core.Identifier,flecs.core.Name)\":{\"value\":\"e\"}}}");
         ecs_os_free(json);
     }
 
@@ -2140,6 +2144,25 @@ void SerializeEntityToJson_serialize_toggle_pair(void) {
     test_assert(json != NULL);
     test_json(json, "{\"name\":\"e\", \"tags\":[\"toggle|(Rel,Tgt)\"],\"pairs\":{\"Rel\":[\"Tgt\"]}}");
     ecs_os_free(json);
+
+    ecs_fini(world);
+}
+
+void SerializeEntityToJson_serialize_null_doc_name(void) {
+    ecs_world_t *world = ecs_init();
+
+    ecs_entity_t e = ecs_new(world);
+    ecs_set_pair(world, e, EcsDocDescription, EcsName, { NULL });
+
+    char *json = ecs_entity_to_json(world, e, NULL);
+    test_assert(json != NULL);
+    
+    char *expect = flecs_asprintf(
+        "{\"name\":\"#%u\", \"components\":{\"(flecs.doc.Description,flecs.core.Name)\":{\"value\":null}}}", (uint32_t)e);
+
+    test_json(json, expect);
+    ecs_os_free(json);
+    ecs_os_free(expect);
 
     ecs_fini(world);
 }

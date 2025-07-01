@@ -136,6 +136,19 @@ void Hierarchies_tree_iter_2_tables(void) {
     ecs_fini(world);
 }
 
+void Hierarchies_tree_iter_parent_0(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ecs_iter_t it = ecs_children(world, 0);
+    test_assert( ecs_children_next(&it) == true);
+    test_int( it.count, 1);
+    test_int(it.entities[0], EcsFlecs);
+
+    test_assert( !ecs_children_next(&it));
+
+    ecs_fini(world);
+}
+
 void Hierarchies_path_depth_0(void) {
     ecs_world_t *world = ecs_mini();
 
@@ -230,6 +243,19 @@ void Hierarchies_path_any_w_empty_prefix(void) {
 
     char *path = ecs_get_path_w_sep(world, 0, EcsAny, ".", "");
     test_str(path, "_");
+    ecs_os_free(path);
+
+    ecs_fini(world);
+}
+
+void Hierarchies_path_w_buf(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ecs_strbuf_t buf = ECS_STRBUF_INIT;
+
+    ecs_get_path_w_sep_buf(world, 0, ecs_id(EcsComponent), ".", 0, &buf, false);
+    char *path = ecs_strbuf_get(&buf);
+    test_str(path, "Component");
     ecs_os_free(path);
 
     ecs_fini(world);
@@ -1514,7 +1540,8 @@ void Hierarchies_get_type_after_recycled_parent_add(void) {
 
     ecs_entity_t parent = ecs_new(world);
     test_assert(parent != 0);
-    test_assert( ecs_get_type(world, parent) == NULL);
+    test_assert( ecs_get_type(world, parent) != NULL);
+    test_int( ecs_get_type(world, parent)->count, 0 );
 
     ecs_delete(world, parent);
     test_assert( !ecs_is_alive(world, parent));

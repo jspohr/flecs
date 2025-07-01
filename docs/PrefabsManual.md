@@ -55,7 +55,7 @@ flecs::entity inst_1 = world.entity().is_a(SpaceShip);
 flecs::entity inst_2 = world.entity().is_a(SpaceShip);
 
 // Get instantiated component
-const Defense *d = inst_1.get<Defense>();
+const Defense& d = inst_1.get<Defense>();
 ```
 
 </li>
@@ -355,10 +355,10 @@ flecs::entity SpaceShip = world.prefab()
 flecs::entity inst = world.entity().is_a(SpaceShip);
 
 // Component is retrieved from instance
-const Health *health = inst.get<Health>();
+const Health& health = inst.get<Health>();
 
 // Component is retrieved from prefab
-const Defense *defense = inst.get<Defense>();
+const Defense& defense = inst.get<Defense>();
 ```
 
 </li>
@@ -836,8 +836,8 @@ flecs::entity Freighter = world.prefab("Freighter")
 
 // Create prefab instance
 flecs::entity inst = world.entity().is_a(Freighter);
-const Health *health = inst.get<Health>(); // 150
-const Defense *defense = inst.get<Defense>(); // 50
+const Health& health = inst.get<Health>(); // 150
+const Defense& defense = inst.get<Defense>(); // 50
 ```
 
 </li>
@@ -971,7 +971,7 @@ When a prefab hierarchy is instantiated often code will want to refer to a speci
 
 While it is possible to lookup a child by name and store it on a component, this adds boilerplate and reduces efficiency. Prefab slots make this easier.
 
-A prefab child can be created as a slot. Slots are created as relationships on the instance, with as target of the relationship the instantiated child. The slot is added as a union relationship which doesn't fragment archetypes.
+A prefab child can be created as a slot. Slots are created as relationships on the instance, with as target of the relationship the instantiated child. The slot is added as a `DontFragment` relationship which doesn't fragment archetypes.
 
 The following example shows how to create and use a prefab slot:
 

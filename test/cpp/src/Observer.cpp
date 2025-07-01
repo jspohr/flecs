@@ -886,8 +886,6 @@ void Observer_on_set_w_set_sparse(void) {
     test_int(count, 1);
 }
 
-#include <iostream>
-
 void Observer_on_add_singleton(void) {
     flecs::world world;
 
@@ -962,7 +960,7 @@ void Observer_on_add_with_pair_singleton(void) {
     world.observer()
         .with<Position>(tgt).singleton()
         .event(flecs::OnSet)
-        .each([&](flecs::entity) {
+        .each([&](flecs::iter&, size_t) {
             count ++;
         });
 
@@ -1495,13 +1493,13 @@ void Observer_trigger_on_set_in_on_add_implicit_registration(void) {
   auto e = world.entity().add<Tag>();
 
   {
-    const Position *p = e.get<Position>();
+    const Position *p = e.try_get<Position>();
     test_int(p->x, 10);
     test_int(p->y, 20);
   }
 
   {
-    const Velocity *v = e.get<Velocity>();
+    const Velocity *v = e.try_get<Velocity>();
     test_int(v->x, 1);
     test_int(v->y, 2);
   }
@@ -1533,14 +1531,73 @@ void Observer_trigger_on_set_in_on_add_implicit_registration_namespaced(void) {
     auto e = world.entity().add<Tag>();
 
     {
-        const Position *p = e.get<Position>();
+        const Position *p = e.try_get<Position>();
         test_int(p->x, 10);
         test_int(p->y, 20);
     }
 
     {
-        const ns::Velocity *v = e.get<ns::Velocity>();
+        const ns::Velocity *v = e.try_get<ns::Velocity>();
         test_int(v->x, 1);
         test_int(v->y, 2);
     }
+}
+
+void Observer_fixed_src_w_each(void) {
+    flecs::world world;
+
+    struct Tag { };
+
+    flecs::entity matched;
+    flecs::entity e = world.entity();
+
+    world.observer()
+        .with<Tag>().src(e)
+        .event(flecs::OnAdd)
+        .each([&](flecs::iter& it, size_t) {
+            matched = it.src(0);
+        });
+
+    test_assert(matched == 0);
+
+    e.add<Tag>();
+
+    test_assert(matched == e);
+
+    matched = flecs::entity::null();
+
+    world.entity().add<Tag>();
+    
+    test_assert(matched == 0);
+}
+
+void Observer_fixed_src_w_run(void) {
+    flecs::world world;
+
+    struct Tag { };
+
+    flecs::entity matched;
+    flecs::entity e = world.entity();
+
+    world.observer()
+        .with<Tag>().src(e)
+        .event(flecs::OnAdd)
+        .run([&](flecs::iter& it) {
+            while (it.next()) {
+                test_int(it.count(), 0);
+                matched = it.src(0);
+            }
+        });
+
+    test_assert(matched == 0);
+
+    e.add<Tag>();
+
+    test_assert(matched == e);
+
+    matched = flecs::entity::null();
+
+    world.entity().add<Tag>();
+    
+    test_assert(matched == 0);
 }

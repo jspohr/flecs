@@ -1204,6 +1204,7 @@ The following table provides the base set of operations that Flecs offers for co
 | `emplace`   | Returns a mutable reference to the component. If the entity doesn't have the component, `emplace` returns a reference to unconstructed memory. This enables adding components that are not default constructible. |
 | `modified`  | Emits a modified event for a component. This ensures that `OnSet` observers and `on_set` hooks are invoked, and updates change detection administration. |
 | `set`       | Sets the value of a component. `set` behaves as a combination of `ensure` and `modified`. `set` does not take ownership of the provided value. |
+| `assign`    | Sets the value of an existing component. `assign` behaves as a combination of `get_mut` and `modified`. `set` does not take ownership of the provided value. |
 
 The following component lifecycle diagram shows how the different operations mutate the storage and cause hooks and observers to be invoked:
 
@@ -1239,10 +1240,10 @@ printf("{size: %d, alignment: %d}\n",
 flecs::entity pos = world.component<Position>();
 
 // Component entities have the Component component
-const flecs::Component *comp_data = pos.get<flecs::Component>();
+const flecs::Component& comp_data = pos.get<flecs::Component>();
 
-std::cout << "{size: " << comp_data->size << ", " 
-          << comp_data->alignment << "}\n";
+std::cout << "{size: " << comp_data.size << ", " 
+          << comp_data.alignment << "}\n";
 ```
 
 </li>
@@ -1801,7 +1802,7 @@ const TimeOfDay *t = ecs_singleton_get(world, TimeOfDay);
 world.set<TimeOfDay>({ 0.5 });
 
 // Get singleton
-const TimeOfDay *t = world.get<TimeOfDay>();
+const TimeOfDay& t = world.get<TimeOfDay>();
 ```
 
 </li>

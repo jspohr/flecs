@@ -47,8 +47,8 @@ void query_flags_to_str(uint64_t value) {
     if (value & EcsQueryHasNonThisOutTerms) {
         printf("EcsQueryHasNonThisOutTerms|");
     }
-    if (value & EcsQueryHasMonitor) {
-        printf("EcsQueryHasMonitor|");
+    if (value & EcsQueryHasChangeDetection) {
+        printf("EcsQueryHasChangeDetection|");
     }
     if (value & EcsQueryIsTrivial) {
         printf("EcsQueryIsTrivial|");
@@ -1844,7 +1844,7 @@ void Validator_validate_double_init(void) {
     test_int(q_1->terms[0].src.id, EcsThis|EcsSelf|EcsIsVariable);
 
     ecs_query_desc_t desc = {0};
-    ecs_os_memcpy_n(desc.terms, q_1->terms, ecs_term_t, FLECS_TERM_COUNT_MAX);
+    ecs_os_memcpy_n(desc.terms, q_1->terms, ecs_term_t, q_1->term_count);
     ecs_query_t *q_2 = ecs_query_init(world, &desc);
     test_assert(q_2 != NULL);
 
@@ -1879,7 +1879,7 @@ void Validator_validate_double_init_w_expr(void) {
     test_int(q_1->terms[0].src.id, EcsThis|EcsSelf|EcsIsVariable);
 
     ecs_query_desc_t desc = {0};
-    ecs_os_memcpy_n(desc.terms, q_1->terms, ecs_term_t, FLECS_TERM_COUNT_MAX);
+    ecs_os_memcpy_n(desc.terms, q_1->terms, ecs_term_t, q_1->term_count);
     ecs_query_t *q_2 = ecs_query_init(world, &desc);
     test_assert(q_2 != NULL);
 
@@ -1914,7 +1914,7 @@ void Validator_validate_double_init_w_expr_optional(void) {
     test_int(q_1->terms[0].src.id, EcsThis|EcsSelf|EcsIsVariable);
 
     ecs_query_desc_t desc = {0};
-    ecs_os_memcpy_n(desc.terms, q_1->terms, ecs_term_t, FLECS_TERM_COUNT_MAX);
+    ecs_os_memcpy_n(desc.terms, q_1->terms, ecs_term_t, q_1->term_count);
     ecs_query_t *q_2 = ecs_query_init(world, &desc);
     test_assert(q_2 != NULL);
 
@@ -2703,11 +2703,11 @@ void Validator_not_wildcard(void) {
 
     test_int(q->term_count, 1);
     test_int(q->field_count, 1);
-    test_uint(q->terms[0].id, EcsAny);
+    test_uint(q->terms[0].id, EcsWildcard);
     test_int(q->terms[0].oper, EcsNot);
     test_int(q->terms[0].inout, EcsInOutNone);
     test_int(q->terms[0].field_index, 0);
-    test_uint(q->terms[0].first.id, EcsAny|EcsSelf|EcsIsVariable);
+    test_uint(q->terms[0].first.id, EcsWildcard|EcsSelf|EcsIsVariable);
     test_uint(q->terms[0].src.id, EcsThis|EcsSelf|EcsIsVariable);
 
     ecs_query_fini(q);
@@ -2726,11 +2726,11 @@ void Validator_not_first_wildcard(void) {
 
     test_int(q->term_count, 1);
     test_int(q->field_count, 1);
-    test_uint(q->terms[0].id, ecs_pair(EcsAny, ecs_id(Position)));
+    test_uint(q->terms[0].id, ecs_pair(EcsWildcard, ecs_id(Position)));
     test_int(q->terms[0].oper, EcsNot);
     test_int(q->terms[0].inout, EcsInOutNone);
     test_int(q->terms[0].field_index, 0);
-    test_uint(q->terms[0].first.id, EcsAny|EcsSelf|EcsIsVariable);
+    test_uint(q->terms[0].first.id, EcsWildcard|EcsSelf|EcsIsVariable);
     test_uint(q->terms[0].second.id, ecs_id(Position)|EcsSelf|EcsIsEntity);
     test_uint(q->terms[0].src.id, EcsThis|EcsSelf|EcsIsVariable);
 
@@ -2750,12 +2750,12 @@ void Validator_not_second_wildcard(void) {
 
     test_int(q->term_count, 1);
     test_int(q->field_count, 1);
-    test_uint(q->terms[0].id, ecs_pair(ecs_id(Position), EcsAny));
+    test_uint(q->terms[0].id, ecs_pair(ecs_id(Position), EcsWildcard));
     test_int(q->terms[0].oper, EcsNot);
     test_int(q->terms[0].inout, EcsInOutNone);
     test_int(q->terms[0].field_index, 0);
     test_uint(q->terms[0].first.id, ecs_id(Position)|EcsSelf|EcsIsEntity);
-    test_uint(q->terms[0].second.id, EcsAny|EcsSelf|EcsIsVariable);
+    test_uint(q->terms[0].second.id, EcsWildcard|EcsSelf|EcsIsVariable);
     test_uint(q->terms[0].src.id, EcsThis|EcsSelf|EcsIsVariable);
 
     ecs_query_fini(q);
@@ -2774,11 +2774,11 @@ void Validator_not_wildcard_id(void) {
 
     test_int(q->term_count, 1);
     test_int(q->field_count, 1);
-    test_uint(q->terms[0].id, EcsAny);
+    test_uint(q->terms[0].id, EcsWildcard);
     test_int(q->terms[0].oper, EcsNot);
     test_int(q->terms[0].inout, EcsInOutNone);
     test_int(q->terms[0].field_index, 0);
-    test_uint(q->terms[0].first.id, EcsAny|EcsSelf|EcsIsVariable);
+    test_uint(q->terms[0].first.id, EcsWildcard|EcsSelf|EcsIsVariable);
     test_uint(q->terms[0].src.id, EcsThis|EcsSelf|EcsIsVariable);
 
     ecs_query_fini(q);
@@ -2797,11 +2797,11 @@ void Validator_not_wildcard_first_pair(void) {
 
     test_int(q->term_count, 1);
     test_int(q->field_count, 1);
-    test_uint(q->terms[0].id, ecs_pair(EcsAny, ecs_id(Position)));
+    test_uint(q->terms[0].id, ecs_pair(EcsWildcard, ecs_id(Position)));
     test_int(q->terms[0].oper, EcsNot);
     test_int(q->terms[0].inout, EcsInOutNone);
     test_int(q->terms[0].field_index, 0);
-    test_uint(q->terms[0].first.id, EcsAny|EcsSelf|EcsIsVariable);
+    test_uint(q->terms[0].first.id, EcsWildcard|EcsSelf|EcsIsVariable);
     test_uint(q->terms[0].second.id, ecs_id(Position)|EcsSelf|EcsIsEntity);
     test_uint(q->terms[0].src.id, EcsThis|EcsSelf|EcsIsVariable);
 
@@ -2821,12 +2821,12 @@ void Validator_not_wildcard_second_pair(void) {
 
     test_int(q->term_count, 1);
     test_int(q->field_count, 1);
-    test_uint(q->terms[0].id, ecs_pair_t(Position, EcsAny));
+    test_uint(q->terms[0].id, ecs_pair_t(Position, EcsWildcard));
     test_int(q->terms[0].oper, EcsNot);
     test_int(q->terms[0].inout, EcsInOutNone);
     test_int(q->terms[0].field_index, 0);
     test_uint(q->terms[0].first.id, ecs_id(Position)|EcsSelf|EcsIsEntity);
-    test_uint(q->terms[0].second.id, EcsAny|EcsSelf|EcsIsVariable);
+    test_uint(q->terms[0].second.id, EcsWildcard|EcsSelf|EcsIsVariable);
     test_uint(q->terms[0].src.id, EcsThis|EcsSelf|EcsIsVariable);
 
     ecs_query_fini(q);
@@ -3389,86 +3389,6 @@ void Validator_validate_simple_w_sparse(void) {
 
     test_query_flags(EcsQueryMatchOnlyThis|EcsQueryMatchThis|
         EcsQueryMatchOnlySelf|EcsQueryHasTableThisVar|EcsQueryHasOutTerms,
-        q->flags);
-    
-    ecs_query_fini(q);
-
-    ecs_fini(world);
-}
-
-void Validator_validate_simple_w_union(void) {
-    ecs_world_t *world = ecs_mini();
-
-    ECS_TAG(world, Rel);
-
-    ecs_add_id(world, Rel, EcsUnion);
-
-    ecs_query_t *q = ecs_query(world, {
-        .terms = {
-            { Rel },
-        },
-        .cache_kind = EcsQueryCacheAuto
-    });
-
-    test_int(q->term_count, 1);
-    test_int(q->field_count, 1);
-    test_int(q->var_count, 1);
-    test_assert(q->vars != NULL);
-    test_assert(q->vars[0] == NULL);
-
-    test_uint(q->terms[0].id, Rel);
-    test_int(q->terms[0].oper, EcsAnd);
-    test_int(q->terms[0].field_index, 0);
-    test_uint(q->terms[0].first.id, Rel|EcsSelf|EcsIsEntity);
-    test_uint(q->terms[0].src.id, EcsThis|EcsSelf|EcsIsVariable);
-    test_uint(q->terms[0].flags_, EcsTermKeepAlive|EcsTermIsCacheable|EcsTermIsTrivial);
-
-    test_assert(!(q->data_fields & (1 << 0)));
-
-    test_query_flags(EcsQueryIsTrivial|EcsQueryIsCacheable|
-        EcsQueryHasCacheable|EcsQueryMatchOnlyThis|EcsQueryMatchThis|
-        EcsQueryMatchOnlySelf|EcsQueryHasTableThisVar,
-        q->flags);
-    
-    ecs_query_fini(q);
-
-    ecs_fini(world);
-}
-
-void Validator_validate_simple_w_union_pair(void) {
-    ecs_world_t *world = ecs_mini();
-
-    ECS_TAG(world, Rel);
-    ECS_TAG(world, Tgt);
-
-    ecs_add_id(world, Rel, EcsUnion);
-
-    ecs_new_w_pair(world, Rel, Tgt);
-
-    ecs_query_t *q = ecs_query(world, {
-        .terms = {
-            { ecs_pair(Rel, Tgt) },
-        },
-        .cache_kind = EcsQueryCacheAuto
-    });
-
-    test_int(q->term_count, 1);
-    test_int(q->field_count, 1);
-    test_int(q->var_count, 1);
-    test_assert(q->vars != NULL);
-    test_assert(q->vars[0] == NULL);
-
-    test_uint(q->terms[0].id, ecs_pair(Rel, Tgt));
-    test_int(q->terms[0].oper, EcsAnd);
-    test_int(q->terms[0].field_index, 0);
-    test_uint(q->terms[0].first.id, Rel|EcsSelf|EcsIsEntity);
-    test_uint(q->terms[0].src.id, EcsThis|EcsSelf|EcsIsVariable);
-    test_uint(q->terms[0].flags_, EcsTermIsUnion);
-
-    test_assert(!(q->data_fields & (1 << 0)));
-
-    test_query_flags(EcsQueryMatchOnlyThis|EcsQueryMatchThis|
-        EcsQueryMatchOnlySelf|EcsQueryHasTableThisVar,
         q->flags);
     
     ecs_query_fini(q);

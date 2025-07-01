@@ -750,10 +750,10 @@ auto e = ecs.entity()
                                   // has a value of type Position
 
 // Gets value from Position component
-const Position *p = e.get<Position>();
+const Position& p = e.get<Position>();
 
 // Gets (unintended) value from (Serializable, Position) pair
-const Position *p = e.get<Serializable, Position>();
+const Position& p = e.get<Serializable, Position>();
 ```
 
 </li>
@@ -847,10 +847,10 @@ auto e = ecs.entity()
                                   // Position is a component
 
 // Gets value from Position component
-const Position *p = e.get<Position>();
+const Position& p = e.get<Position>();
 
 // This no longer works, the pair has no data
-const Position *p = e.get<Serializable, Position>();
+const Position& p = e.get<Serializable, Position>();
 ```
 
 </li>
@@ -937,7 +937,193 @@ let i = world.entity().is_a_id(e); // not allowed
 </ul>
 </div>
 
-Queries may use the final trait to optimize, as they do not have to explore subsets of a final entity. For more information on how queries interpret final, see the [Query manual](Queries.md). By default, all components are created as final.
+Queries may use the final trait to optimize, as they do not have to explore subsets of a final entity. For more information on how queries interpret final, see the [Query manual](Queries.md).
+
+## Inheritable trait
+The `Inheritable` trait indicates that a component can be inherited from (it can be used as target of an `IsA` relationship). It is not required to add this trait to components before using them as target of an `IsA` pair, but it can be used to ensure that queries for the component take into account component inheritance.
+
+<div class="flecs-snippet-tabs">
+<ul>
+<li><b class="tab-title">C</b>
+
+```c
+ECS_TAG(world, Unit);
+ecs_add_id(world, Unit, EcsInheritable);
+
+ecs_query_t *q = ecs_query(world, {
+    .terms = {{ Unit }}
+});
+
+ECS_TAG(world, Warrior);
+ecs_add_pair(world, Warrior, EcsIsA, Unit);
+
+ecs_iter_t it = ecs_query_iter(world, q);
+// iterate query
+```
+
+</li>
+<li><b class="tab-title">C++</b>
+
+```cpp
+world.component<Unit>().add(flecs::Inheritable);
+
+auto q = world.query_builder()
+  .with<Unit>()
+  .build();
+
+world.component<Warrior>().is_a<Unit>();
+
+q.each([](flecs::entity unit) {
+    // ...
+});
+```
+
+</li>
+<li><b class="tab-title">C#</b>
+
+```cs
+world.Component<Unit>().Add(Ecs.Inheritable);
+
+auto q = world.QueryBuilder()
+  .With<Unit>()
+  .Build();
+
+q.Each([](Entity unit) {
+    // ...
+});
+```
+
+</li>
+<li><b class="tab-title">Rust</b>
+
+```rust
+world.component::<Unit>().add_trait::<flecs::Inheritable>();
+
+auto q = world.query()
+  .with::<Unit>()
+  .build();
+
+world.component<Warrior>().is_a<Unit>();
+
+q.each_entity(|e|  {
+    // ...
+});
+```
+
+</li>
+</ul>
+</div>
+
+Queries must be aware of (potential) inheritance relationships when they are created. A query will be created with support for inheritance under the following conditions:
+ - If the component has the `Inheritable` trait
+ - If the component is inherited from
+ - If the component inherits from another component and is not `Final`
+
+If a query was not aware of inheritance relationships at creation time and one or more of the components in the query were inherited from, query iteration will fail in debug mode.
+
+## OrderedChildren trait
+The `OrderedChildren` trait can be added to entities to indicate that creation order or a custom order should be preserved. 
+
+When this trait is added to a parent, the entity ids returned by the `ecs_children` / `entity::children` operations will be in creation or custom order. Children of a parent with the `OrderedChildren` trait are guaranteed to be returned in a single result.
+
+The trait does not affect the order in which entities are returned by queries.
+
+<div class="flecs-snippet-tabs">
+<ul>
+<li><b class="tab-title">C</b>
+
+```c
+ecs_entity_t parent = ecs_new(world);
+ecs_add_id(world, parent, EcsOrderedChildren);
+
+ecs_entity_t child_1 = ecs_new_w_pair(world, EcsChildOf, parent);
+ecs_entity_t child_2 = ecs_new_w_pair(world, EcsChildOf, parent);
+ecs_entity_t child_3 = ecs_new_w_pair(world, EcsChildOf, parent);
+
+// Adding/removing components usually changes the order in which children are
+// iterated, but with the OrderedChildren trait order is preserved.
+ecs_set(world, child_2, Position, {10, 20});
+
+ecs_iter_t it = ecs_children(world, parent);
+while (ecs_children_next(&it)) {
+    // it.table will be set to NULL when iterating ordered children.
+    for (int i = 0; i < it.count; i ++) {
+        ecs_entity_t e = it.entities[i];
+        // i == 0: child_1
+        // i == 1: child_2
+        // i == 2: child_3
+    }
+}
+```
+
+</li>
+<li><b class="tab-title">C++</b>
+
+```cpp
+flecs::entity parent = world.entity().add(flecs::OrderedChildren);
+
+flecs::entity child_1 = world.entity().child_of(parent);
+flecs::entity child_2 = world.entity().child_of(parent);
+flecs::entity child_3 = world.entity().child_of(parent);
+
+// Adding/removing components usually changes the order in which children are
+// iterated, but with the OrderedChildren trait order is preserved.
+child_2.set(Position{10, 20});
+
+parent.children([](flecs::entity child) {
+    // 1st result: child_1
+    // 2nd result: child_2
+    // 3rd result: child_3
+});
+```
+
+</li>
+<li><b class="tab-title">C#</b>
+
+```cs
+Entity parent = world.Entity().Add(Ecs.OrderedChildren);
+
+Entity child_1 = world.Entity().ChildOf(parent);
+Entity child_2 = world.Entity().ChildOf(parent);
+Entity child_3 = world.Entity().ChildOf(parent);
+
+// Adding/removing components usually changes the order in which children are
+// iterated, but with the OrderedChildren trait order is preserved.
+child_2.Set<Position>(new(10, 20));
+
+parent.Children((Entity child) => {
+    // 1st result: child_1
+    // 2nd result: child_2
+    // 3rd result: child_3
+});
+```
+
+</li>
+<li><b class="tab-title">Rust</b>
+
+```rust
+let parent = world.entity().add_trait::<flecs::OrderedChildren>();
+
+let child_1 = world.entity().child_of_id(parent);
+let child_2 = world.entity().child_of_id(parent);
+let child_3 = world.entity().child_of_id(parent);
+
+// Adding/removing components usually changes the order in which children are
+// iterated, but with the OrderedChildren trait order is preserved.
+child_2.set(Position{10, 20});
+
+parent.each_child(|child| {
+    // 1st result: child_1
+    // 2nd result: child_2
+    // 3rd result: child_3
+});
+```
+
+</li>
+</ul>
+</div>
+
+The stored order can be modified by an application with the `ecs_set_child_order` / `entity::set_child_order` operation.
 
 ## OnInstantiate trait
 The `OnInstantiate` trait configures the behavior of components when an entity is instantiated from another entity (usually a prefab). Instantiation happens when an `IsA` pair is added to an entity.
@@ -985,7 +1171,7 @@ ecs_entity_t base = ecs.entity().set(Mass, { 100 });
 ecs_entity_t inst = ecs.entity().is_a(base); // Mass is copied to inst
 
 assert(inst.owns<Mass>());
-assert(base.get<Mass>() != inst.get<Mass>());
+assert(base.try_get<Mass>() != inst.try_get<Mass>());
 ```
 
 </li>
@@ -1062,7 +1248,7 @@ ecs_entity_t inst = ecs.entity().is_a(base);
 
 assert(inst.has<Mass>());
 assert(!inst.owns<Mass>());
-assert(base.get<Mass>() != inst.get<Mass>());
+assert(base.try_get<Mass>() != inst.try_get<Mass>());
 ```
 
 </li>
@@ -1141,7 +1327,7 @@ ecs_entity_t inst = ecs.entity().is_a(base);
 
 assert(!inst.has<Mass>());
 assert(!inst.owns<Mass>());
-assert(inst.get<Mass>() == nullptr);
+assert(inst.try_get<Mass>() == nullptr);
 ```
 
 </li>
@@ -1499,72 +1685,6 @@ assert!(e.is_enabled::<Position>());
 </ul>
 </div>
 
-## Union trait
-The `Union` is similar to `Exclusive` in that it enforces that an entity can have only a single instance of a relationship. The difference between `Exclusive` and `Union` is that `Union` combines different relationship targets in a single table. This reduces table fragmentation, and as a result speeds up add/remove operations. This increase in add/remove speed does come at a cost: iterating a query with union terms is more expensive than iterating a regular relationship.
-
-The API for using the `Union` trait is similar to regular relationships, as this example shows:
-
-<div class="flecs-snippet-tabs">
-<ul>
-<li><b class="tab-title">C</b>
-
-```c
-ecs_entity_t Movement = ecs_new(world);
-ecs_add_id(world, Movement, EcsUnion);
-
-ecs_entity_t Walking = ecs_new(world);
-ecs_entity_t Running = ecs_new(world);
-
-ecs_entity_t e = ecs_new(world);
-ecs_add_pair(world, e, Movement, Running);
-ecs_add_pair(world, e, Movement, Walking); // replaces (Movement, Running)
-```
-
-</li>
-<li><b class="tab-title">C++</b>
-
-```cpp
-flecs::entity Movement = world.entity().add(flecs::Union);
-flecs::entity Walking = world.entity();
-flecs::entity Running = world.entity();
-
-flecs::entity e = world.entity().add(Movement, Running);
-e.add(Movement, Walking); // replaces (Movement, Running)
-```
-
-</li>
-<li><b class="tab-title">C#</b>
-
-```cs
-Entity movement = world.Entity().Add(Ecs.Union);
-Entity walking = world.Entity();
-Entity running = world.Entity();
-
-Entity e = world.Entity().Add(movement, running);
-e.Add(movement, walking); // replaces (Movement, Running)
-```
-
-</li>
-<li><b class="tab-title">Rust</b>
-
-```rust
-let movement = world.entity().add_trait::<flecs::Union>();
-let walking = world.entity();
-let running = world.entity();
-
-let e = world.entity().add_id((movement, running));
-e.add_id((movement, walking)); // replaces (Movement, Running)
-```
-
-</li>
-</ul>
-</div>
-
-When compared to regular relationships, union relationships have some differences and limitations:
-- Relationship cleanup does not work yet for union relationships
-- Removing a union relationship removes any target, even if the specified target is different
-- Union relationships cannot have data
-
 ## Sparse trait
 The `Sparse` trait configures a component to use sparse storage. Sparse components are stored outside of tables, which means they do not have to be moved. Sparse components are also guaranteed to have stable pointers, which means that a component pointer is not invalidated when an entity moves to a new table. ECS operations and queries work as expected with sparse components.
 
@@ -1608,6 +1728,64 @@ world.component::<Position>().add_trait::<flecs::Sparse>();
 </li>
 </ul>
 </div>
+
+## DontFragment trait
+The `DontFragment` trait uses the same sparse storage as the `Sparse` trait, but does not fragment tables. This can be desirable especially if a component or relationship is very sparse (e.g. it is only added to a few entities) as this would otherwise result in many tables that only contain a small number of entities.
+
+The following code example shows how to mark a component as `DontFragment`:
+
+<div class="flecs-snippet-tabs">
+<ul>
+<li><b class="tab-title">C</b>
+
+```c
+ECS_COMPONENT(world, Position);
+ecs_add_id(world, ecs_id(Position), EcsDontFragment);
+```
+
+</li>
+<li><b class="tab-title">C++</b>
+
+```cpp
+world.component<Position>().add(flecs::DontFragment);
+```
+
+</li>
+<li><b class="tab-title">C#</b>
+
+```cs
+ecs.Component<Position>().Entity
+    .Add(Ecs.DontFragment);
+```
+
+</li>
+<li><b class="tab-title">Rust</b>
+
+```rust
+world.component::<Position>().add_trait::<flecs::DontFragment>();
+```
+
+</li>
+</ul>
+</div>
+
+Components with the `DontFragment` trait have the following limitations:
+- They don't show up in types (obtained by `ecs_get_type` / `entity::type`)
+- Monitors don't trigger on `DontFragment` components. The reason for this is that monitors compare the previous table with the current table of an entity to determine if an entity started matching, and `DontFragment` components aren't part of the table.
+
+Support for `DontFragment` has a number of (temporary) limitations:
+- `target_for` does not yet work for `DontFragment` components.
+- `DontFragment` components are not serialized yet to JSON (and don't show up in the explorer).
+- `Or`, `Optional`, `AndFrom` and `NotFrom` operators are not yet supported.
+- Component inheritance and transitivity are not yet supported.
+- Queries for `DontFragment` components may run slower than expected.
+
+What does work:
+- ECS operations (`add`, `remove`, `get`, `get_mut`, `ensure`, `emplace`, `set`, `delete`).
+- Relationships (including `Exclusive` relationships).
+- Simple component queries.
+- Wildcard queries.
+- Queries with variables.
 
 ## Symmetric trait
 The `Symmetric` trait enforces that when a relationship `(R, Y)` is added to entity `X`, the relationship `(R, X)` will be added to entity `Y`. The reverse is also true, if relationship `(R, Y)` is removed from `X`, relationship `(R, X)` will be removed from `Y`.

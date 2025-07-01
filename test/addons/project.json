@@ -113,7 +113,9 @@
                 "pipeline_init_no_system_term",
                 "disable_component_from_immediate_system",
                 "run_w_empty_query",
-                "run_w_0_src_query"
+                "run_w_0_src_query",
+                "inout_none_after_write",
+                "empty_pipeline_after_disable_phase"
             ]
         }, {
             "id": "SystemMisc",
@@ -434,10 +436,7 @@
                 "5_threads_add_to_current",
                 "6_threads_add_to_current",
                 "2_threads_on_add",
-                "new_w_count",
                 "custom_thread_auto_merge",
-                "set_pair_w_new_target_readonly",
-                "set_pair_w_new_target_tgt_component_readonly",
                 "set_pair_w_new_target_defer",
                 "set_pair_w_new_target_tgt_component_defer"
             ]
@@ -510,7 +509,8 @@
                 "import_rest_after_mini",
                 "get_pipeline_stats_after_delete_system",
                 "request_world_summary_before_monitor_sys_run",
-                "escape_backslash"
+                "escape_backslash",
+                "request_small_buffer_plus_one"
             ]
         }, {
             "id": "Metrics",

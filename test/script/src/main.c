@@ -320,6 +320,13 @@ void Eval_component_w_assign_add(void);
 void Eval_component_w_assign_mul(void);
 void Eval_opaque_struct_component(void);
 void Eval_opaque_string_component(void);
+void Eval_add_component_w_invalid_ctor(void);
+void Eval_add_component_pair_w_invalid_ctor(void);
+void Eval_add_component_as_tag_w_invalid_ctor(void);
+void Eval_add_component_as_tag_pair_w_invalid_ctor(void);
+void Eval_interpolated_name_w_nested_for_loop(void);
+void Eval_interpolated_name_w_nested_for_loop_no_dollar_sign(void);
+void Eval_interpolated_name_w_nested_for_loop_wrong_dollar_sign(void);
 
 // Testsuite 'Template'
 void Template_template_no_scope(void);
@@ -489,6 +496,7 @@ void Expr_sub_2_int_literals(void);
 void Expr_mul_2_int_literals(void);
 void Expr_div_2_int_literals(void);
 void Expr_add_3_int_literals(void);
+void Expr_add_3_int_literals_dec_hex_bin(void);
 void Expr_add_3_int_literals_twice(void);
 void Expr_sub_3_int_literals(void);
 void Expr_mul_3_int_literals(void);
@@ -600,6 +608,8 @@ void Expr_cond_lteq_int(void);
 void Expr_cond_lteq_flt(void);
 void Expr_min_lparen_int_rparen(void);
 void Expr_min_lparen_int_add_int_rparen(void);
+void Expr_min_number_hex(void);
+void Expr_min_number_bin(void);
 void Expr_min_var(void);
 void Expr_min_lparen_int_rparen_to_i64(void);
 void Expr_min_lparen_int_rparen_to_i32(void);
@@ -624,7 +634,14 @@ void Expr_mul_int_shift_left_int(void);
 void Expr_add_int_shift_left_int_add_int(void);
 void Expr_mul_int_shift_left_int_mul_int(void);
 void Expr_entity_expr(void);
+void Expr_entity_0_expr(void);
 void Expr_entity_path_expr(void);
+void Expr_root_lookup_func(void);
+void Expr_root_lookup_func_not_found(void);
+void Expr_root_lookup_func_w_entity_arg(void);
+void Expr_entity_lookup_func(void);
+void Expr_entity_lookup_func_not_found(void);
+void Expr_entity_lookup_func_w_entity_arg(void);
 void Expr_entity_parent_func(void);
 void Expr_entity_name_func(void);
 void Expr_entity_has_func(void);
@@ -2197,6 +2214,34 @@ bake_test_case Eval_testcases[] = {
     {
         "opaque_string_component",
         Eval_opaque_string_component
+    },
+    {
+        "add_component_w_invalid_ctor",
+        Eval_add_component_w_invalid_ctor
+    },
+    {
+        "add_component_pair_w_invalid_ctor",
+        Eval_add_component_pair_w_invalid_ctor
+    },
+    {
+        "add_component_as_tag_w_invalid_ctor",
+        Eval_add_component_as_tag_w_invalid_ctor
+    },
+    {
+        "add_component_as_tag_pair_w_invalid_ctor",
+        Eval_add_component_as_tag_pair_w_invalid_ctor
+    },
+    {
+        "interpolated_name_w_nested_for_loop",
+        Eval_interpolated_name_w_nested_for_loop
+    },
+    {
+        "interpolated_name_w_nested_for_loop_no_dollar_sign",
+        Eval_interpolated_name_w_nested_for_loop_no_dollar_sign
+    },
+    {
+        "interpolated_name_w_nested_for_loop_wrong_dollar_sign",
+        Eval_interpolated_name_w_nested_for_loop_wrong_dollar_sign
     }
 };
 
@@ -2856,6 +2901,10 @@ bake_test_case Expr_testcases[] = {
         Expr_add_3_int_literals
     },
     {
+        "add_3_int_literals_dec_hex_bin",
+        Expr_add_3_int_literals_dec_hex_bin
+    },
+    {
         "add_3_int_literals_twice",
         Expr_add_3_int_literals_twice
     },
@@ -3300,6 +3349,14 @@ bake_test_case Expr_testcases[] = {
         Expr_min_lparen_int_add_int_rparen
     },
     {
+        "min_number_hex",
+        Expr_min_number_hex
+    },
+    {
+        "min_number_bin",
+        Expr_min_number_bin
+    },
+    {
         "min_var",
         Expr_min_var
     },
@@ -3396,8 +3453,36 @@ bake_test_case Expr_testcases[] = {
         Expr_entity_expr
     },
     {
+        "entity_0_expr",
+        Expr_entity_0_expr
+    },
+    {
         "entity_path_expr",
         Expr_entity_path_expr
+    },
+    {
+        "root_lookup_func",
+        Expr_root_lookup_func
+    },
+    {
+        "root_lookup_func_not_found",
+        Expr_root_lookup_func_not_found
+    },
+    {
+        "root_lookup_func_w_entity_arg",
+        Expr_root_lookup_func_w_entity_arg
+    },
+    {
+        "entity_lookup_func",
+        Expr_entity_lookup_func
+    },
+    {
+        "entity_lookup_func_not_found",
+        Expr_entity_lookup_func_not_found
+    },
+    {
+        "entity_lookup_func_w_entity_arg",
+        Expr_entity_lookup_func_w_entity_arg
     },
     {
         "entity_parent_func",
@@ -4694,7 +4779,7 @@ static bake_test_suite suites[] = {
         "Eval",
         NULL,
         NULL,
-        311,
+        318,
         Eval_testcases
     },
     {
@@ -4715,7 +4800,7 @@ static bake_test_suite suites[] = {
         "Expr",
         Expr_setup,
         NULL,
-        270,
+        280,
         Expr_testcases,
         1,
         Expr_params

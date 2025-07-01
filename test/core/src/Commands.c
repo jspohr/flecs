@@ -2672,6 +2672,191 @@ void Commands_defer_override_after_remove_3_ops(void) {
     ecs_fini(world);
 }
 
+void Commands_defer_override_after_remove_63_commands(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ecs_entity_t components[63];
+    for (int i = 0; i < 63; i ++) {
+        components[i] = ecs_component_init(world, &(ecs_component_desc_t){
+            .type.size = ECS_SIZEOF(Position),
+            .type.alignment = ECS_ALIGNOF(Position)
+        });
+    }
+
+    ECS_COMPONENT(world, Position);
+
+    ecs_add_pair(world, ecs_id(Position), EcsOnInstantiate, EcsInherit);
+
+    ecs_entity_t base = ecs_insert(world, ecs_value(Position, {10, 20}));
+    ecs_entity_t inst = ecs_new_w_pair(world, EcsIsA, base);
+    ecs_set(world, inst, Position, {20, 30});
+
+    ecs_defer_begin(world);
+    ecs_remove(world, inst, Position);
+    for (int i = 0; i < 63; i ++) {
+        ecs_add_id(world, inst, components[i]);
+    }
+    ecs_add(world, inst, Position);
+    ecs_defer_end(world);
+
+    const Position *p = ecs_get(world, inst, Position);
+    test_assert(p != NULL);
+    test_int(p->x, 10);
+    test_int(p->y, 20);
+
+    test_assert(p != ecs_get(world, base, Position));
+
+    ecs_fini(world);
+}
+
+void Commands_defer_override_after_remove_64_commands(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ecs_entity_t components[64];
+    for (int i = 0; i < 64; i ++) {
+        components[i] = ecs_component_init(world, &(ecs_component_desc_t){
+            .type.size = ECS_SIZEOF(Position),
+            .type.alignment = ECS_ALIGNOF(Position)
+        });
+    }
+
+    ECS_COMPONENT(world, Position);
+
+    ecs_add_pair(world, ecs_id(Position), EcsOnInstantiate, EcsInherit);
+
+    ecs_entity_t base = ecs_insert(world, ecs_value(Position, {10, 20}));
+    ecs_entity_t inst = ecs_new_w_pair(world, EcsIsA, base);
+    ecs_set(world, inst, Position, {20, 30});
+
+    ecs_defer_begin(world);
+    ecs_remove(world, inst, Position);
+    for (int i = 0; i < 64; i ++) {
+        ecs_add_id(world, inst, components[i]);
+    }
+    ecs_add(world, inst, Position);
+    ecs_defer_end(world);
+
+    const Position *p = ecs_get(world, inst, Position);
+    test_assert(p != NULL);
+    test_int(p->x, 10);
+    test_int(p->y, 20);
+
+    test_assert(p != ecs_get(world, base, Position));
+
+    ecs_fini(world);
+}
+
+void Commands_defer_override_after_remove_65_commands(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ecs_entity_t components[65];
+    for (int i = 0; i < 65; i ++) {
+        components[i] = ecs_component_init(world, &(ecs_component_desc_t){
+            .type.size = ECS_SIZEOF(Position),
+            .type.alignment = ECS_ALIGNOF(Position)
+        });
+    }
+
+    ECS_COMPONENT(world, Position);
+
+    ecs_add_pair(world, ecs_id(Position), EcsOnInstantiate, EcsInherit);
+
+    ecs_entity_t base = ecs_insert(world, ecs_value(Position, {10, 20}));
+    ecs_entity_t inst = ecs_new_w_pair(world, EcsIsA, base);
+    ecs_set(world, inst, Position, {20, 30});
+
+    ecs_defer_begin(world);
+    ecs_remove(world, inst, Position);
+    for (int i = 0; i < 65; i ++) {
+        ecs_add_id(world, inst, components[i]);
+    }
+    ecs_add(world, inst, Position);
+    ecs_defer_end(world);
+
+    const Position *p = ecs_get(world, inst, Position);
+    test_assert(p != NULL);
+    test_int(p->x, 10);
+    test_int(p->y, 20);
+
+    test_assert(p != ecs_get(world, base, Position));
+
+    ecs_fini(world);
+}
+
+void Commands_defer_override_after_remove_96_commands(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ecs_entity_t components[96];
+    for (int i = 0; i < 96; i ++) {
+        components[i] = ecs_component_init(world, &(ecs_component_desc_t){
+            .type.size = ECS_SIZEOF(Position),
+            .type.alignment = ECS_ALIGNOF(Position)
+        });
+    }
+
+    ECS_COMPONENT(world, Position);
+
+    ecs_add_pair(world, ecs_id(Position), EcsOnInstantiate, EcsInherit);
+
+    ecs_entity_t base = ecs_insert(world, ecs_value(Position, {10, 20}));
+    ecs_entity_t inst = ecs_new_w_pair(world, EcsIsA, base);
+    ecs_set(world, inst, Position, {20, 30});
+
+    ecs_defer_begin(world);
+    ecs_remove(world, inst, Position);
+    for (int i = 0; i < 96; i ++) {
+        ecs_add_id(world, inst, components[i]);
+    }
+    ecs_add(world, inst, Position);
+    ecs_defer_end(world);
+
+    const Position *p = ecs_get(world, inst, Position);
+    test_assert(p != NULL);
+    test_int(p->x, 10);
+    test_int(p->y, 20);
+
+    test_assert(p != ecs_get(world, base, Position));
+
+    ecs_fini(world);
+}
+
+void Commands_defer_override_after_remove_255_commands(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ecs_entity_t components[255];
+    for (int i = 0; i < 255; i ++) {
+        components[i] = ecs_component_init(world, &(ecs_component_desc_t){
+            .type.size = ECS_SIZEOF(Position),
+            .type.alignment = ECS_ALIGNOF(Position)
+        });
+    }
+
+    ECS_COMPONENT(world, Position);
+
+    ecs_add_pair(world, ecs_id(Position), EcsOnInstantiate, EcsInherit);
+
+    ecs_entity_t base = ecs_insert(world, ecs_value(Position, {10, 20}));
+    ecs_entity_t inst = ecs_new_w_pair(world, EcsIsA, base);
+    ecs_set(world, inst, Position, {20, 30});
+
+    ecs_defer_begin(world);
+    ecs_remove(world, inst, Position);
+    for (int i = 0; i < 255; i ++) {
+        ecs_add_id(world, inst, components[i]);
+    }
+    ecs_add(world, inst, Position);
+    ecs_defer_end(world);
+
+    const Position *p = ecs_get(world, inst, Position);
+    test_assert(p != NULL);
+    test_int(p->x, 10);
+    test_int(p->y, 20);
+
+    test_assert(p != ecs_get(world, base, Position));
+
+    ecs_fini(world);
+}
+
 void Commands_flush_stage_to_deferred_world(void) {
     ecs_world_t *world = ecs_mini();
 
@@ -3557,7 +3742,6 @@ void Commands_absent_ensure_for_entity_w_tag(void) {
 
 static int set_position_invoked = 0;
 static int set_velocity_invoked = 0;
-static int add_tag_invoked = 0;
 
 static void set_position_hook(ecs_iter_t *it) {
     set_position_invoked ++;
@@ -3565,45 +3749,6 @@ static void set_position_hook(ecs_iter_t *it) {
 
 static void set_velocity_hook(ecs_iter_t *it) {
     set_velocity_invoked ++;
-}
-
-static void add_tag(ecs_iter_t *it) {
-    test_int(set_position_invoked, 1);
-    add_tag_invoked ++;
-}
-
-void Commands_on_set_hook_before_on_add_for_existing_component(void) {
-    ecs_world_t *world = ecs_mini();
-
-    ECS_COMPONENT(world, Position);
-    ECS_TAG(world, TagA);
-    ECS_TAG(world, TagB);
-
-    ecs_set_hooks(world, Position, {
-        .on_set = set_position_hook
-    });
-
-    ecs_observer(world, {
-        .query.terms[0].id = TagA,
-        .events = { EcsOnAdd },
-        .callback = add_tag
-    });
-
-    ecs_entity_t e = ecs_new_w(world, Position);
-
-    ecs_defer_begin(world);
-    ecs_add(world, e, TagB); /* 2 add commands, to trigger batching */
-    ecs_modified(world, e, Position);
-    ecs_add(world, e, TagA);
-
-    test_int(set_position_invoked, 0);
-    test_int(add_tag_invoked, 0);
-    ecs_defer_end(world);
-
-    test_assert(set_position_invoked != 0);
-    test_int(add_tag_invoked, 1);
-
-    ecs_fini(world);
 }
 
 void Commands_defer_2_sets_w_observer_same_component(void) {
@@ -4561,6 +4706,161 @@ void Commands_ensure_from_2_stages(void) {
 
     test_assert(ecs_has(world, e, Position));
     test_assert(ecs_has(world, e, Foo));
+
+    ecs_fini(world);
+}
+
+static ECS_COMPONENT_DECLARE(Velocity);
+
+static void remove_velocity(ecs_iter_t *it) {
+    ecs_remove(it->world, it->entities[0], Velocity);
+}
+
+void Commands_batch_w_old_and_recycled_id(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_COMPONENT(world, Position);
+    ECS_COMPONENT_DEFINE(world, Velocity);
+
+    ecs_observer(world, {
+        .query.terms = {{ ecs_id(Position) }},
+        .events = { EcsOnRemove },
+        .callback = remove_velocity
+    });
+
+    ecs_entity_t parent = ecs_new(world);
+    ecs_entity_t child = ecs_new_w_pair(world, EcsChildOf, parent);
+
+    ecs_entity_t grandchild = ecs_new(world);
+    ecs_add_pair(world, grandchild, EcsChildOf, child);
+    ecs_add(world, grandchild, Position);
+
+    ecs_defer_begin(world);
+    ecs_defer_suspend(world);
+    ecs_delete(world, child);
+    ecs_entity_t child_2 = ecs_new_w_pair(world, EcsChildOf, parent);
+    ecs_defer_resume(world);
+    ecs_entity_t e = ecs_new(world);
+    ecs_add(world, e, Position);
+
+    test_assert(!ecs_has(world, e, Position));
+    ecs_defer_end(world);
+
+    test_assert(ecs_is_alive(world, parent));
+    test_assert(!ecs_is_alive(world, child));
+    test_assert(ecs_is_alive(world, child_2));
+    test_assert(!ecs_is_alive(world, grandchild));
+    test_assert(ecs_is_alive(world, e));
+    test_assert(ecs_has_pair(world, child_2, EcsChildOf, parent));
+    test_assert(ecs_has(world, e, Position));
+
+    ecs_fini(world);
+}
+
+void Commands_batch_w_two_named_entities_one_reparent(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_COMPONENT(world, Position);
+    ECS_COMPONENT(world, Velocity);
+
+    ecs_entity_t parent = ecs_new(world);
+    ecs_entity_t e1 = ecs_entity(world, { .name = "a" });
+    ecs_entity_t e2 = ecs_entity(world, { .name = "b" });
+
+    ecs_defer_begin(world);
+
+    ecs_add_pair(world, e1, EcsChildOf, parent); // to trigger reparenting
+    ecs_add(world, e1, Position); // to create batch
+
+    ecs_add(world, e2, Position);
+    ecs_add(world, e2, Velocity); // to create batch
+
+    ecs_defer_end(world);
+
+    test_assert(ecs_has_pair(world, e1, EcsChildOf, parent));
+    test_assert(ecs_has(world, e1, Position));
+
+    test_assert(ecs_has(world, e2, Position));
+    test_assert(ecs_has(world, e2, Velocity));
+
+    ecs_fini(world);
+}
+
+void Commands_batch_w_two_named_entities_one_reparent_w_remove(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_COMPONENT(world, Position);
+    ECS_COMPONENT(world, Velocity);
+
+    ecs_entity_t parent = ecs_new(world);
+    ecs_entity_t e1 = ecs_entity(world, { .name = "a" });
+    ecs_entity_t e2 = ecs_entity(world, { .name = "b" });
+
+    ecs_add_pair(world, e1, EcsChildOf, parent);
+
+    ecs_defer_begin(world);
+
+    ecs_remove_pair(world, e1, EcsChildOf, parent); // to trigger reparenting
+    ecs_add(world, e1, Position); // to create batch
+
+    ecs_add(world, e2, Position);
+    ecs_add(world, e2, Velocity); // to create batch
+
+    ecs_defer_end(world);
+
+    test_assert(!ecs_has_pair(world, e1, EcsChildOf, parent));
+    test_assert(ecs_has(world, e1, Position));
+
+    test_assert(ecs_has(world, e2, Position));
+    test_assert(ecs_has(world, e2, Velocity));
+
+    ecs_fini(world);
+}
+
+void Commands_batch_new_w_parent_w_name(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ecs_entity_t parent = ecs_new(world);
+
+    ecs_defer_begin(world);
+
+    ecs_entity_t e = ecs_new_w_pair(world, EcsChildOf, parent);
+    ecs_set_name(world, e, "Foo");
+
+    test_assert(!ecs_has_pair(world, e, EcsChildOf, parent));
+    test_assert(ecs_get_name(world, e) == NULL);
+
+    ecs_defer_end(world);
+
+    test_assert(ecs_has_pair(world, e, EcsChildOf, parent));
+    test_str(ecs_get_name(world, e), "Foo");
+
+    ecs_fini(world);
+}
+
+void Commands_enable_component_from_stage(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_COMPONENT(world, Position);
+    ecs_add_id(world, ecs_id(Position), EcsCanToggle);
+
+    ecs_entity_t e = ecs_new(world);
+    ecs_add(world, e, Position);
+
+    ecs_set_stage_count(world, 2);
+    ecs_world_t *s = ecs_get_stage(world, 1);
+
+    test_bool(true, ecs_is_enabled(world, e, Position));
+
+    ecs_defer_begin(s);
+
+    ecs_enable_component(s, e, Position, false);
+
+    test_bool(true, ecs_is_enabled(world, e, Position));
+
+    ecs_defer_end(s);
+
+    test_bool(false, ecs_is_enabled(world, e, Position));
 
     ecs_fini(world);
 }

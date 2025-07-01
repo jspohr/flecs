@@ -8951,7 +8951,7 @@ void Traversal_match_empty_table_up_written_isa(void) {
 }
 
 void Traversal_up_after_add_batched_to_parent(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
     ECS_TAG(world, Bar);
@@ -8990,7 +8990,7 @@ void Traversal_up_after_add_batched_to_parent(void) {
 }
 
 void Traversal_up_component_after_parent_table_change(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_COMPONENT(world, Position);
     ECS_TAG(world, Foo);
@@ -9067,7 +9067,7 @@ void Traversal_up_component_after_parent_table_change(void) {
 }
 
 void Traversal_up_component_w_singleton_after_parent_table_change(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_COMPONENT(world, Position);
     ECS_COMPONENT(world, Velocity);
@@ -9162,7 +9162,7 @@ void Traversal_up_component_w_singleton_after_parent_table_change(void) {
 }
 
 void Traversal_up_component_w_var_after_parent_table_change(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_COMPONENT(world, Position);
     ECS_COMPONENT(world, Velocity);
@@ -9314,7 +9314,7 @@ void Traversal_up_component_w_var_after_parent_table_change(void) {
 }
 
 void Traversal_test_up_component_after_parent_table_change(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_COMPONENT(world, Position);
     ECS_TAG(world, Foo);
@@ -9405,7 +9405,7 @@ void Traversal_test_up_component_after_parent_table_change(void) {
 }
 
 void Traversal_test_up_component_w_singleton_after_parent_table_change(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_COMPONENT(world, Position);
     ECS_COMPONENT(world, Velocity);
@@ -9514,7 +9514,7 @@ void Traversal_test_up_component_w_singleton_after_parent_table_change(void) {
 }
 
 void Traversal_up_component_after_parent_table_change_no_data(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_COMPONENT(world, Position);
     ECS_TAG(world, Foo);
@@ -9575,7 +9575,7 @@ void Traversal_up_component_after_parent_table_change_no_data(void) {
 }
 
 void Traversal_up_component_w_singleton_after_parent_table_change_no_data(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_COMPONENT(world, Position);
     ECS_COMPONENT(world, Velocity);
@@ -9648,7 +9648,7 @@ void Traversal_up_component_w_singleton_after_parent_table_change_no_data(void) 
 }
 
 void Traversal_up_component_w_var_after_parent_table_change_no_data(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_COMPONENT(world, Position);
     ECS_COMPONENT(world, Velocity);
@@ -9756,7 +9756,7 @@ void Traversal_up_component_w_var_after_parent_table_change_no_data(void) {
 }
 
 void Traversal_test_up_component_after_parent_table_change_no_data(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_COMPONENT(world, Position);
     ECS_TAG(world, Foo);
@@ -9829,7 +9829,7 @@ void Traversal_test_up_component_after_parent_table_change_no_data(void) {
 }
 
 void Traversal_test_up_component_w_singleton_after_parent_table_change_no_data(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_COMPONENT(world, Position);
     ECS_COMPONENT(world, Velocity);
@@ -9914,7 +9914,7 @@ void Traversal_test_up_component_w_singleton_after_parent_table_change_no_data(v
 }
 
 void Traversal_this_up_childof_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
 
@@ -9953,7 +9953,7 @@ void Traversal_this_up_childof_isa_childof(void) {
 }
 
 void Traversal_this_up_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
 
@@ -9989,7 +9989,7 @@ void Traversal_this_up_isa_childof(void) {
 }
 
 void Traversal_this_up_isa_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
 
@@ -10028,7 +10028,7 @@ void Traversal_this_up_isa_isa_childof(void) {
 }
 
 void Traversal_this_up_isa_childof_isa(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
 
@@ -10067,7 +10067,7 @@ void Traversal_this_up_isa_childof_isa(void) {
 }
 
 void Traversal_this_up_isa_childof_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
 
@@ -10109,7 +10109,7 @@ void Traversal_this_up_isa_childof_isa_childof(void) {
 }
 
 void Traversal_this_self_up_childof_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
 
@@ -10153,7 +10153,7 @@ void Traversal_this_self_up_childof_isa_childof(void) {
 }
 
 void Traversal_this_self_up_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
 
@@ -10194,7 +10194,7 @@ void Traversal_this_self_up_isa_childof(void) {
 }
 
 void Traversal_this_self_up_isa_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
 
@@ -10238,7 +10238,7 @@ void Traversal_this_self_up_isa_isa_childof(void) {
 }
 
 void Traversal_this_self_up_isa_childof_isa(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
 
@@ -10282,7 +10282,7 @@ void Traversal_this_self_up_isa_childof_isa(void) {
 }
 
 void Traversal_this_self_up_isa_childof_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
 
@@ -10329,7 +10329,7 @@ void Traversal_this_self_up_isa_childof_isa_childof(void) {
 }
 
 void Traversal_this_written_up_childof_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
     ECS_TAG(world, Bar);
@@ -10366,7 +10366,7 @@ void Traversal_this_written_up_childof_isa_childof(void) {
 }
 
 void Traversal_this_written_up_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
     ECS_TAG(world, Bar);
@@ -10405,7 +10405,7 @@ void Traversal_this_written_up_isa_childof(void) {
 }
 
 void Traversal_this_written_up_isa_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
     ECS_TAG(world, Bar);
@@ -10447,7 +10447,7 @@ void Traversal_this_written_up_isa_isa_childof(void) {
 }
 
 void Traversal_this_written_up_isa_childof_isa(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
     ECS_TAG(world, Bar);
@@ -10484,7 +10484,7 @@ void Traversal_this_written_up_isa_childof_isa(void) {
 }
 
 void Traversal_this_written_up_isa_childof_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
     ECS_TAG(world, Bar);
@@ -10524,7 +10524,7 @@ void Traversal_this_written_up_isa_childof_isa_childof(void) {
 }
 
 void Traversal_this_written_self_up_childof_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
     ECS_TAG(world, Bar);
@@ -10561,7 +10561,7 @@ void Traversal_this_written_self_up_childof_isa_childof(void) {
 }
 
 void Traversal_this_written_self_up_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
     ECS_TAG(world, Bar);
@@ -10600,7 +10600,7 @@ void Traversal_this_written_self_up_isa_childof(void) {
 }
 
 void Traversal_this_written_self_up_isa_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
     ECS_TAG(world, Bar);
@@ -10641,7 +10641,7 @@ void Traversal_this_written_self_up_isa_isa_childof(void) {
 }
 
 void Traversal_this_written_self_up_isa_childof_isa(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
     ECS_TAG(world, Bar);
@@ -10678,7 +10678,7 @@ void Traversal_this_written_self_up_isa_childof_isa(void) {
 }
 
 void Traversal_this_written_self_up_isa_childof_isa_childof(void) {
-    ecs_world_t *world = ecs_init();
+    ecs_world_t *world = ecs_mini();
 
     ECS_TAG(world, Foo);
     ECS_TAG(world, Bar);
@@ -10760,6 +10760,8 @@ void Traversal_this_up_isa_childof_2_lvl(void) {
 
     test_bool(false, ecs_query_next(&it));
 
+    ecs_query_fini(q);
+
     ecs_fini(world);
 }
 
@@ -10806,6 +10808,8 @@ void Traversal_this_up_isa_childof_2_lvl_w_on_instantiate_inherit(void) {
 
     test_bool(false, ecs_query_next(&it));
 
+    ecs_query_fini(q);
+
     ecs_fini(world);
 }
 
@@ -10839,6 +10843,8 @@ void Traversal_this_up_isa_childof_2_lvl_w_on_instantiate_dont_inherit(void) {
 
     ecs_iter_t it = ecs_query_iter(world, q);
     test_bool(false, ecs_query_next(&it));
+
+    ecs_query_fini(q);
 
     ecs_fini(world);
 }
@@ -10874,6 +10880,8 @@ void Traversal_this_up_isa_childof_2_lvl_after_remove_override(void) {
 
     ecs_iter_t it = ecs_query_iter(world, q);
     test_bool(false, ecs_query_next(&it));
+
+    ecs_query_fini(q);
 
     ecs_fini(world);
 }
@@ -10920,6 +10928,8 @@ void Traversal_this_written_up_isa_childof_2_lvl(void) {
     test_uint(inst, ecs_field_src(&it, 1));
 
     test_bool(false, ecs_query_next(&it));
+    
+    ecs_query_fini(q);
 
     ecs_fini(world);
 }
@@ -10967,6 +10977,8 @@ void Traversal_this_written_up_isa_childof_2_lvl_w_on_instantiate_inherit(void) 
 
     test_bool(false, ecs_query_next(&it));
 
+    ecs_query_fini(q);
+
     ecs_fini(world);
 }
 
@@ -11000,6 +11012,8 @@ void Traversal_this_written_up_isa_childof_2_lvl_w_on_instantiate_dont_inherit(v
 
     ecs_iter_t it = ecs_query_iter(world, q);
     test_bool(false, ecs_query_next(&it));
+
+    ecs_query_fini(q);
 
     ecs_fini(world);
 }
@@ -11035,6 +11049,902 @@ void Traversal_this_written_up_isa_childof_2_lvl_after_remove_override(void) {
 
     ecs_iter_t it = ecs_query_iter(world, q);
     test_bool(false, ecs_query_next(&it));
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Traversal_singleton_w_this_up_w_table_change(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Tag);
+    ECS_TAG(world, Foo);
+    ECS_TAG(world, Bar);
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms = {{ Foo, .src.id = EcsSingleton }, { Bar, .src.id = EcsUp }},
+        .cache_kind = cache_kind
+    });
+
+    test_assert(q != NULL);
+
+    ecs_singleton_add(world, Foo);
+
+    ecs_entity_t p = ecs_new_w(world, Bar);
+    ecs_entity_t c = ecs_new_w_pair(world, EcsChildOf, p);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(Foo, ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(Foo, ecs_field_id(&it, 0));
+        test_uint(Bar, ecs_field_id(&it, 1));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, Foo));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_add(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(Foo, ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(Foo, ecs_field_id(&it, 0));
+        test_uint(Bar, ecs_field_id(&it, 1));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, Foo));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_remove(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(Foo, ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(Foo, ecs_field_id(&it, 0));
+        test_uint(Bar, ecs_field_id(&it, 1));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, Foo));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Traversal_this_up_w_singleton_w_table_change(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Tag);
+    ECS_TAG(world, Foo);
+    ECS_TAG(world, Bar);
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms = {{ Bar, .src.id = EcsUp }, { Foo, .src.id = EcsSingleton }},
+        .cache_kind = cache_kind
+    });
+
+    test_assert(q != NULL);
+
+    ecs_singleton_add(world, Foo);
+
+    ecs_entity_t p = ecs_new_w(world, Bar);
+    ecs_entity_t c = ecs_new_w_pair(world, EcsChildOf, p);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(Foo, ecs_field_src(&it, 1));
+        test_uint(Bar, ecs_field_id(&it, 0));
+        test_uint(Foo, ecs_field_id(&it, 1));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, Foo));
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_add(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(Foo, ecs_field_src(&it, 1));
+        test_uint(Bar, ecs_field_id(&it, 0));
+        test_uint(Foo, ecs_field_id(&it, 1));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, Foo));
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_remove(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(Foo, ecs_field_src(&it, 1));
+        test_uint(Bar, ecs_field_id(&it, 0));
+        test_uint(Foo, ecs_field_id(&it, 1));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, Foo));
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Traversal_2_this_up_w_singleton_w_table_change(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Tag);
+    ECS_TAG(world, Foo);
+    ECS_TAG(world, Bar);
+    ECS_TAG(world, Singleton);
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms = {
+            { Foo, .src.id = EcsUp },
+            { Bar, .src.id = EcsUp },
+            { Singleton, .src.id = EcsSingleton }
+        },
+        .cache_kind = cache_kind
+    });
+
+    test_assert(q != NULL);
+
+    ecs_singleton_add(world, Singleton);
+
+    ecs_entity_t p = ecs_new_w(world, Foo);
+    ecs_add(world, p, Bar);
+    ecs_entity_t c = ecs_new_w_pair(world, EcsChildOf, p);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(Singleton, ecs_field_src(&it, 2));
+        test_uint(Foo, ecs_field_id(&it, 0));
+        test_uint(Bar, ecs_field_id(&it, 1));
+        test_uint(Singleton, ecs_field_id(&it, 2));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[2] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[2]->hdr.table == ecs_get_table(world, Singleton));
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_add(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(Singleton, ecs_field_src(&it, 2));
+        test_uint(Foo, ecs_field_id(&it, 0));
+        test_uint(Bar, ecs_field_id(&it, 1));
+        test_uint(Singleton, ecs_field_id(&it, 2));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[2] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[2]->hdr.table == ecs_get_table(world, Singleton));
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_remove(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(Singleton, ecs_field_src(&it, 2));
+        test_uint(Foo, ecs_field_id(&it, 0));
+        test_uint(Bar, ecs_field_id(&it, 1));
+        test_uint(Singleton, ecs_field_id(&it, 2));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[2] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[2]->hdr.table == ecs_get_table(world, Singleton));
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Traversal_2_this_up_w_singleton_w_tag_w_table_change(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Tag);
+    ECS_TAG(world, Foo);
+    ECS_TAG(world, Bar);
+    ECS_TAG(world, Hello);
+    ECS_TAG(world, Singleton);
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms = {
+            { Foo, .src.id = EcsUp },
+            { Bar, .src.id = EcsUp },
+            { Singleton, .src.id = EcsSingleton },
+            { Hello },
+        },
+        .cache_kind = cache_kind
+    });
+
+    test_assert(q != NULL);
+
+    ecs_singleton_add(world, Singleton);
+
+    ecs_entity_t p = ecs_new_w(world, Foo);
+    ecs_add(world, p, Bar);
+    ecs_entity_t c = ecs_new_w_pair(world, EcsChildOf, p);
+    ecs_add(world, c, Hello);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(Singleton, ecs_field_src(&it, 2));
+        test_uint(Foo, ecs_field_id(&it, 0));
+        test_uint(Bar, ecs_field_id(&it, 1));
+        test_uint(Singleton, ecs_field_id(&it, 2));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[2] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[2]->hdr.table == ecs_get_table(world, Singleton));
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_add(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(Singleton, ecs_field_src(&it, 2));
+        test_uint(Foo, ecs_field_id(&it, 0));
+        test_uint(Bar, ecs_field_id(&it, 1));
+        test_uint(Singleton, ecs_field_id(&it, 2));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[2] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[2]->hdr.table == ecs_get_table(world, Singleton));
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_remove(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(Singleton, ecs_field_src(&it, 2));
+        test_uint(Foo, ecs_field_id(&it, 0));
+        test_uint(Bar, ecs_field_id(&it, 1));
+        test_uint(Singleton, ecs_field_id(&it, 2));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[2] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[2]->hdr.table == ecs_get_table(world, Singleton));
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Traversal_singleton_w_this_up_w_table_change_components(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Tag);
+    ECS_COMPONENT(world, Position);
+    ECS_COMPONENT(world, Velocity);
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms = {
+            { ecs_id(Velocity), .src.id = EcsSingleton }, 
+            { ecs_id(Position), .src.id = EcsUp }
+        },
+        .cache_kind = cache_kind
+    });
+
+    test_assert(q != NULL);
+
+    ecs_singleton_set(world, Velocity, {1, 2});
+
+    ecs_entity_t p = ecs_insert(world, ecs_value(Position, {10, 20}));
+    ecs_entity_t c = ecs_new_w_pair(world, EcsChildOf, p);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(ecs_id(Velocity), ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(ecs_id(Velocity), ecs_field_id(&it, 0));
+        test_uint(ecs_id(Position), ecs_field_id(&it, 1));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, ecs_id(Velocity)));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        {
+            Velocity *v = ecs_field(&it, Velocity, 0);
+            test_assert(v != NULL);
+            test_int(v->x, 1);
+            test_int(v->y, 2);
+        }
+        {
+            Position *p = ecs_field(&it, Position, 1);
+            test_assert(p != NULL);
+            test_int(p->x, 10);
+            test_int(p->y, 20);
+        }
+        test_bool(false, ecs_query_next(&it));
+    }
+
+
+    ecs_add(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(ecs_id(Velocity), ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(ecs_id(Velocity), ecs_field_id(&it, 0));
+        test_uint(ecs_id(Position), ecs_field_id(&it, 1));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, ecs_id(Velocity)));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        {
+            Velocity *v = ecs_field(&it, Velocity, 0);
+            test_assert(v != NULL);
+            test_int(v->x, 1);
+            test_int(v->y, 2);
+        }
+        {
+            Position *p = ecs_field(&it, Position, 1);
+            test_assert(p != NULL);
+            test_int(p->x, 10);
+            test_int(p->y, 20);
+        }
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_remove(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(ecs_id(Velocity), ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(ecs_id(Velocity), ecs_field_id(&it, 0));
+        test_uint(ecs_id(Position), ecs_field_id(&it, 1));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, ecs_id(Velocity)));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        {
+            Velocity *v = ecs_field(&it, Velocity, 0);
+            test_assert(v != NULL);
+            test_int(v->x, 1);
+            test_int(v->y, 2);
+        }
+        {
+            Position *p = ecs_field(&it, Position, 1);
+            test_assert(p != NULL);
+            test_int(p->x, 10);
+            test_int(p->y, 20);
+        }
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Traversal_this_up_w_singleton_w_table_change_components(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Tag);
+    ECS_COMPONENT(world, Position);
+    ECS_COMPONENT(world, Velocity);
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms = {
+            { ecs_id(Position), .src.id = EcsUp },
+            { ecs_id(Velocity), .src.id = EcsSingleton }
+        },
+        .cache_kind = cache_kind
+    });
+
+    test_assert(q != NULL);
+
+    ecs_singleton_set(world, Velocity, {1, 2});
+
+    ecs_entity_t p = ecs_insert(world, ecs_value(Position, {10, 20}));
+    ecs_entity_t c = ecs_new_w_pair(world, EcsChildOf, p);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(ecs_id(Velocity), ecs_field_src(&it, 1));
+        test_uint(ecs_id(Position), ecs_field_id(&it, 0));
+        test_uint(ecs_id(Velocity), ecs_field_id(&it, 1));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, ecs_id(Velocity)));
+        {
+            Position *p = ecs_field(&it, Position, 0);
+            test_assert(p != NULL);
+            test_int(p->x, 10);
+            test_int(p->y, 20);
+        }
+        {
+            Velocity *v = ecs_field(&it, Velocity, 1);
+            test_assert(v != NULL);
+            test_int(v->x, 1);
+            test_int(v->y, 2);
+        }
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_add(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(ecs_id(Velocity), ecs_field_src(&it, 1));
+        test_uint(ecs_id(Position), ecs_field_id(&it, 0));
+        test_uint(ecs_id(Velocity), ecs_field_id(&it, 1));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, ecs_id(Velocity)));
+        {
+            Position *p = ecs_field(&it, Position, 0);
+            test_assert(p != NULL);
+            test_int(p->x, 10);
+            test_int(p->y, 20);
+        }
+        {
+            Velocity *v = ecs_field(&it, Velocity, 1);
+            test_assert(v != NULL);
+            test_int(v->x, 1);
+            test_int(v->y, 2);
+        }
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_remove(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(ecs_id(Velocity), ecs_field_src(&it, 1));
+        test_uint(ecs_id(Position), ecs_field_id(&it, 0));
+        test_uint(ecs_id(Velocity), ecs_field_id(&it, 1));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, ecs_id(Velocity)));
+        {
+            Position *p = ecs_field(&it, Position, 0);
+            test_assert(p != NULL);
+            test_int(p->x, 10);
+            test_int(p->y, 20);
+        }
+        {
+            Velocity *v = ecs_field(&it, Velocity, 1);
+            test_assert(v != NULL);
+            test_int(v->x, 1);
+            test_int(v->y, 2);
+        }
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Traversal_2_this_up_w_singleton_w_table_change_components(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Tag);
+    ECS_COMPONENT(world, Position);
+    ECS_COMPONENT(world, Velocity);
+    ECS_COMPONENT(world, Mass);
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms = {
+            { ecs_id(Position), .src.id = EcsUp },
+            { ecs_id(Velocity), .src.id = EcsUp },
+            { ecs_id(Mass), .src.id = EcsSingleton }
+        },
+        .cache_kind = cache_kind
+    });
+
+    test_assert(q != NULL);
+
+    ecs_singleton_set(world, Mass, {100});
+
+    ecs_entity_t p = ecs_insert(world, ecs_value(Position, {10, 20}));
+    ecs_set(world, p, Velocity, {1, 2});
+    ecs_entity_t c = ecs_new_w_pair(world, EcsChildOf, p);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(ecs_id(Mass), ecs_field_src(&it, 2));
+        test_uint(ecs_id(Position), ecs_field_id(&it, 0));
+        test_uint(ecs_id(Velocity), ecs_field_id(&it, 1));
+        test_uint(ecs_id(Mass), ecs_field_id(&it, 2));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[2] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[2]->hdr.table == ecs_get_table(world, ecs_id(Mass)));
+        {
+            Position *p = ecs_field(&it, Position, 0);
+            test_assert(p != NULL);
+            test_int(p->x, 10);
+            test_int(p->y, 20);
+        }
+        {
+            Velocity *v = ecs_field(&it, Velocity, 1);
+            test_assert(v != NULL);
+            test_int(v->x, 1);
+            test_int(v->y, 2);
+        }
+        {
+            Mass *m = ecs_field(&it, Mass, 2);
+            test_assert(m != NULL);
+            test_int(*m, 100);
+        }
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_add(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(ecs_id(Mass), ecs_field_src(&it, 2));
+        test_uint(ecs_id(Position), ecs_field_id(&it, 0));
+        test_uint(ecs_id(Velocity), ecs_field_id(&it, 1));
+        test_uint(ecs_id(Mass), ecs_field_id(&it, 2));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[2] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[2]->hdr.table == ecs_get_table(world, ecs_id(Mass)));
+        {
+            Position *p = ecs_field(&it, Position, 0);
+            test_assert(p != NULL);
+            test_int(p->x, 10);
+            test_int(p->y, 20);
+        }
+        {
+            Velocity *v = ecs_field(&it, Velocity, 1);
+            test_assert(v != NULL);
+            test_int(v->x, 1);
+            test_int(v->y, 2);
+        }
+        {
+            Mass *m = ecs_field(&it, Mass, 2);
+            test_assert(m != NULL);
+            test_int(*m, 100);
+        }
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_remove(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(ecs_id(Mass), ecs_field_src(&it, 2));
+        test_uint(ecs_id(Position), ecs_field_id(&it, 0));
+        test_uint(ecs_id(Velocity), ecs_field_id(&it, 1));
+        test_uint(ecs_id(Mass), ecs_field_id(&it, 2));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[2] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[2]->hdr.table == ecs_get_table(world, ecs_id(Mass)));
+        {
+            Position *p = ecs_field(&it, Position, 0);
+            test_assert(p != NULL);
+            test_int(p->x, 10);
+            test_int(p->y, 20);
+        }
+        {
+            Velocity *v = ecs_field(&it, Velocity, 1);
+            test_assert(v != NULL);
+            test_int(v->x, 1);
+            test_int(v->y, 2);
+        }
+        {
+            Mass *m = ecs_field(&it, Mass, 2);
+            test_assert(m != NULL);
+            test_int(*m, 100);
+        }
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_query_fini(q);
+
+    ecs_fini(world);
+}
+
+void Traversal_2_this_up_w_singleton_w_component_w_table_change_components(void) {
+    ecs_world_t *world = ecs_mini();
+
+    ECS_TAG(world, Tag);
+    ECS_COMPONENT(world, Position);
+    ECS_COMPONENT(world, Velocity);
+    ECS_COMPONENT(world, Mass);
+    ECS_COMPONENT(world, Rotation);
+
+    ecs_query_t *q = ecs_query(world, {
+        .terms = {
+            { ecs_id(Position), .src.id = EcsUp },
+            { ecs_id(Velocity), .src.id = EcsUp },
+            { ecs_id(Mass), .src.id = EcsSingleton },
+            { ecs_id(Rotation) }
+        },
+        .cache_kind = cache_kind
+    });
+
+    test_assert(q != NULL);
+
+    ecs_singleton_set(world, Mass, {100});
+
+    ecs_entity_t p = ecs_insert(world, ecs_value(Position, {10, 20}));
+    ecs_set(world, p, Velocity, {1, 2});
+    ecs_entity_t c = ecs_new_w_pair(world, EcsChildOf, p);
+    ecs_set(world, c, Rotation, {180});
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(ecs_id(Mass), ecs_field_src(&it, 2));
+        test_uint(0, ecs_field_src(&it, 3));
+        test_uint(ecs_id(Position), ecs_field_id(&it, 0));
+        test_uint(ecs_id(Velocity), ecs_field_id(&it, 1));
+        test_uint(ecs_id(Mass), ecs_field_id(&it, 2));
+        test_uint(ecs_id(Rotation), ecs_field_id(&it, 3));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[2] != NULL);
+        test_assert(it.trs[3] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[2]->hdr.table == ecs_get_table(world, ecs_id(Mass)));
+        test_assert(it.trs[3]->hdr.table == ecs_get_table(world, c));
+        {
+            Position *p = ecs_field(&it, Position, 0);
+            test_assert(p != NULL);
+            test_int(p->x, 10);
+            test_int(p->y, 20);
+        }
+        {
+            Velocity *v = ecs_field(&it, Velocity, 1);
+            test_assert(v != NULL);
+            test_int(v->x, 1);
+            test_int(v->y, 2);
+        }
+        {
+            Mass *m = ecs_field(&it, Mass, 2);
+            test_assert(m != NULL);
+            test_int(*m, 100);
+        }
+        {
+            Rotation *r = ecs_field(&it, Rotation, 3);
+            test_assert(r != NULL);
+            test_int(*r, 180);
+        }
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_add(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(ecs_id(Mass), ecs_field_src(&it, 2));
+        test_uint(0, ecs_field_src(&it, 3));
+        test_uint(ecs_id(Position), ecs_field_id(&it, 0));
+        test_uint(ecs_id(Velocity), ecs_field_id(&it, 1));
+        test_uint(ecs_id(Mass), ecs_field_id(&it, 2));
+        test_uint(ecs_id(Rotation), ecs_field_id(&it, 3));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[2] != NULL);
+        test_assert(it.trs[3] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[2]->hdr.table == ecs_get_table(world, ecs_id(Mass)));
+        test_assert(it.trs[3]->hdr.table == ecs_get_table(world, c));
+        {
+            Position *p = ecs_field(&it, Position, 0);
+            test_assert(p != NULL);
+            test_int(p->x, 10);
+            test_int(p->y, 20);
+        }
+        {
+            Velocity *v = ecs_field(&it, Velocity, 1);
+            test_assert(v != NULL);
+            test_int(v->x, 1);
+            test_int(v->y, 2);
+        }
+        {
+            Mass *m = ecs_field(&it, Mass, 2);
+            test_assert(m != NULL);
+            test_int(*m, 100);
+        }
+        {
+            Rotation *r = ecs_field(&it, Rotation, 3);
+            test_assert(r != NULL);
+            test_int(*r, 180);
+        }
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_remove(world, p, Tag);
+
+    {
+        ecs_iter_t it = ecs_query_iter(world, q);
+        test_bool(true, ecs_query_next(&it));
+        test_int(1, it.count);
+        test_uint(c, it.entities[0]);
+        test_uint(p, ecs_field_src(&it, 0));
+        test_uint(p, ecs_field_src(&it, 1));
+        test_uint(ecs_id(Mass), ecs_field_src(&it, 2));
+        test_uint(0, ecs_field_src(&it, 3));
+        test_uint(ecs_id(Position), ecs_field_id(&it, 0));
+        test_uint(ecs_id(Velocity), ecs_field_id(&it, 1));
+        test_uint(ecs_id(Mass), ecs_field_id(&it, 2));
+        test_uint(ecs_id(Rotation), ecs_field_id(&it, 3));
+        test_assert(it.trs[0] != NULL);
+        test_assert(it.trs[1] != NULL);
+        test_assert(it.trs[2] != NULL);
+        test_assert(it.trs[3] != NULL);
+        test_assert(it.trs[0]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[1]->hdr.table == ecs_get_table(world, p));
+        test_assert(it.trs[2]->hdr.table == ecs_get_table(world, ecs_id(Mass)));
+        test_assert(it.trs[3]->hdr.table == ecs_get_table(world, c));
+        {
+            Position *p = ecs_field(&it, Position, 0);
+            test_assert(p != NULL);
+            test_int(p->x, 10);
+            test_int(p->y, 20);
+        }
+        {
+            Velocity *v = ecs_field(&it, Velocity, 1);
+            test_assert(v != NULL);
+            test_int(v->x, 1);
+            test_int(v->y, 2);
+        }
+        {
+            Mass *m = ecs_field(&it, Mass, 2);
+            test_assert(m != NULL);
+            test_int(*m, 100);
+        }
+        {
+            Rotation *r = ecs_field(&it, Rotation, 3);
+            test_assert(r != NULL);
+            test_int(*r, 180);
+        }
+        test_bool(false, ecs_query_next(&it));
+    }
+
+    ecs_query_fini(q);
 
     ecs_fini(world);
 }
